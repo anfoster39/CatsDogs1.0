@@ -9,7 +9,7 @@ import catsdogs.sim.Cat;
 import catsdogs.sim.Move;
 import catsdogs.sim.PossibleMove;
 
-public class G2CatPlayer {
+public class G2CatPlayer extends catsdogs.sim.Player {
 	private Logger logger = Logger.getLogger(this.getClass()); // for logging
 
 	private final Random r = new Random();
