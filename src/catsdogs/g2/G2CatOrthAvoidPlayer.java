@@ -1,5 +1,6 @@
 package catsdogs.g2;
 
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.TreeMap;
@@ -27,7 +28,6 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.Player {
 	}
 	public Move doMove(int[][] board) {
 		ArrayList<PossibleMove> moves = Cat.allLegalMoves(board);
-		ArrayList<PossibleMove> moves2 = Cat.allLegalMoves(board);
 		boolean ok = false;
 		int size = moves.size();
 		int which = r.nextInt(size);
@@ -41,7 +41,55 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.Player {
 				 which = r.nextInt(size);
 			}
 		}
+		int test = getOrthCount(board);
+		logger.info(test);
 		return moves.get(which);
 		
 	}
+	public int getOrthCount(int[][] board){
+		int orthCt = 0;
+
+		for(int i = 0; i < 7; i++){
+			for(int j = 0; j < 7; j++){
+				if(board[i][j]==Board.CAT){
+					Point2D.Double ptHere = new Point2D.Double(i,j);
+					orthCt+=getAdjacentCount(board, ptHere);
+				}
+			}
+		}
+		
+		return orthCt;
+	}
+	public int getAdjacentCount(int[][] board, Point2D.Double pt) {
+		int adjCt = 0;
+		try{
+			if(board[(int) pt.x][(int) (pt.y+1)]==Board.DOG){
+				adjCt++;
+			}
+		}catch(java.lang.ArrayIndexOutOfBoundsException e){
+			
+		}
+		try{
+
+			if(board[(int) pt.x][(int) (pt.y-1)]==Board.DOG){
+				adjCt++;
+			}
+		}catch(java.lang.ArrayIndexOutOfBoundsException e){
+			
+		}try{
+			if(board[(int) pt.x+1][(int) (pt.y)]==Board.DOG){
+				adjCt++;
+			}
+		}catch(java.lang.ArrayIndexOutOfBoundsException e){
+			
+		}try{
+			if(board[(int) pt.x-1][(int) (pt.y)]==Board.DOG){
+				adjCt++;
+			}
+		}catch(java.lang.ArrayIndexOutOfBoundsException e){
+			
+		}
+		return adjCt;
+	}
+
 }
