@@ -39,12 +39,23 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.Player {
 	public PossibleMove getBestCatMove(int[][] currentBoard){
 		//looks at each option 
 		ArrayList<PossibleMove> moves = Cat.allLegalMoves(currentBoard);
+
 		//HashMap<PossibleMove, Integer> scores = new HashMap<PossibleMove, Integer>();
 		PossibleMove bestMove = null;
 		int bestScore = 10000;
-		for (PossibleMove move: moves){
+		int size = moves.size();
+		ArrayList<PossibleMove> moves2keep = new ArrayList<PossibleMove>();
+		for(int i = 0 ; i< size; i++){
+			if(!Dog.wins(moves.get(i).getBoard())){
+				moves2keep.add(moves.get(i));
+			}
+		}
+		if(moves2keep.size()==0){
+			return moves.get(0);
+		}
+		for (PossibleMove move: moves2keep){
 			int score = getFutureScore(move);
-			if (score < bestScore){
+			if (score < bestScore ){
 				bestScore = score;
 				bestMove = move;
 			}
