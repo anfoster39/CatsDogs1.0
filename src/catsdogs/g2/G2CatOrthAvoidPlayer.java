@@ -1,14 +1,10 @@
 package catsdogs.g2;
 
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Random;
-import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
 
-import catsdogs.sim.Board;
 import catsdogs.sim.Cat;
 import catsdogs.sim.Dog;
 import catsdogs.sim.Move;
@@ -26,8 +22,7 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.Player {
 
 	}
 	public Move doMove(int[][] board) {
-		ArrayList<PossibleMove> moves = Cat.allLegalMoves(board);
-		return getBestCatMove(board);
+		return getBestCatMove(board, 0);
 		
 	}
 	
@@ -36,10 +31,12 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.Player {
 	 * @param currentBoard
 	 * @return
 	 */
-	public PossibleMove getBestCatMove(int[][] currentBoard){
+	public PossibleMove getBestCatMove(int[][] currentBoard, int round){
 		//looks at each option 
 		ArrayList<PossibleMove> moves = Cat.allLegalMoves(currentBoard);
-
+		if (moves.size() == 0){
+			return null;
+		}
 		//HashMap<PossibleMove, Integer> scores = new HashMap<PossibleMove, Integer>();
 		PossibleMove bestMove = null;
 		int bestScore = 10000;
@@ -50,17 +47,17 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.Player {
 				moves2keep.add(moves.get(i));
 			}
 		}
-		if(moves2keep.size()==0){
+		if(moves2keep.size() == 0){
+			logger.info("Round " + round + "Moves " + moves.toString());
 			return moves.get(0);
 		}
 		for (PossibleMove move: moves2keep){
-			int score = getFutureScore(move);
+			int score = getFutureScore(move, round);
 			if (score < bestScore ){
 				bestScore = score;
 				bestMove = move;
 			}
 		}
-		logger.info("Cat move score " + bestScore);
 		return bestMove;
 	}
 	
@@ -69,12 +66,31 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.Player {
 	 * @param move 
 	 * @return
 	 */
-	private Integer getFutureScore(PossibleMove move) {
+	private Integer getFutureScore(PossibleMove move, int round) {
+		round += 1;
+		if (round >= 2){
+			PossibleMove bestDogMove = getBestDogSingleMove(Dog.allLegalMoves(move.getBoard()));
+			ArrayList<PossibleMove> nextCatMoves = Cat.allLegalMoves(bestDogMove.getBoard());
+			if (nextCatMoves.size() == 0){
+				return 200;
+			}
+			int best = 1000;
+			for (PossibleMove catMove: nextCatMoves){
+				int score = score(catMove);
+				if (score < best){
+					best = score; 
+				}
+			}	
+			return best;
+		}
 		PossibleMove bestDogMove = getBestDogSingleMove(Dog.allLegalMoves(move.getBoard()));
 		ArrayList<PossibleMove> nextCatMoves = Cat.allLegalMoves(bestDogMove.getBoard());
+		if (nextCatMoves.size() == 0){
+			return 200;
+		}
 		int best = 1000;
 		for (PossibleMove catMove: nextCatMoves){
-			int score = score(catMove);
+			int score = score(getBestCatMove(catMove.getBoard(), round));
 			if (score < best){
 				best = score; 
 			}
@@ -115,27 +131,7 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.Player {
 		PossibleMove retMove = secondOptions.get(which);
 		return retMove;
 	}
-	
-	
-//	public ArrayList<PossibleMove> dogBestMoves(ArrayList<PossibleMove> moves){
-//		ArrayList<PossibleMove> dogMoves = new ArrayList<PossibleMove>();
-//		for(PossibleMove pm : moves){
-//			dogMoves.add(getBestDogSingleMove(Dog.allLegalMoves(pm.getBoard())));
-//		}
-//		
-//		return dogMoves;
-//		
-//	}
-//	public PossibleMove returnBestMove(ArrayList<PossibleMove> dogMoves){
-//		//pruning dogs moves down to best dog move
-//		PossibleMove best;
-//		for(PossibleMove pm : dogMoves){
-//			
-//		}
-//		
-//		return best;
-//	}
-	
+		
 	public PossibleMove getMoveWithLowestOrth(ArrayList<PossibleMove> moves){
 		int minOrth = 100000;
 		PossibleMove which = moves.get(0);
