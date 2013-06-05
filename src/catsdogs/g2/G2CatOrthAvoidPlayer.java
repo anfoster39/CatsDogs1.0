@@ -12,6 +12,7 @@ import catsdogs.sim.PossibleMove;
 
 public class G2CatOrthAvoidPlayer extends catsdogs.sim.Player {
 	private Logger logger = Logger.getLogger(this.getClass()); // for logging
+	private final int recursiveLimit = 2;
 
 	public String getName() {
 		return "G2CatOrthAvoidPlayer";
@@ -68,7 +69,7 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.Player {
 	 */
 	private Integer getFutureScore(PossibleMove move, int round) {
 		round += 1;
-		if (round >= 2){
+		if (round >= recursiveLimit){
 			PossibleMove bestDogMove = getBestDogSingleMove(Dog.allLegalMoves(move.getBoard()));
 			ArrayList<PossibleMove> nextCatMoves = Cat.allLegalMoves(bestDogMove.getBoard());
 			if (nextCatMoves.size() == 0){
@@ -90,28 +91,25 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.Player {
 		}
 		int best = 1000;
 		for (PossibleMove catMove: nextCatMoves){
-			int score = score(getBestCatMove(catMove.getBoard(), round));
+			PossibleMove pm = getBestCatMove(catMove.getBoard(), round);
+			int score=0;
+			if(pm ==null){
+				if (Cat.wins(catMove.getBoard()) ){
+				score = -100;
+				}
+				else{
+				score = 100;
+				}
+			}
+			else{
+				score = score(pm);
+			}
+			
 			if (score < best){
 				best = score; 
 			}
 		}
 		return best;
-	}
-
-	/**
-	 * Scores a single board for the cat
-	 * @param catMove
-	 * @return the score 
-	 */
-	private int score(PossibleMove catMove) {
-		int score = Cat.allLegalMoves(catMove.getBoard()).size();
-		if(Dog.wins(catMove.getBoard())){
-			score += 1000;
-		}
-		if(Cat.wins(catMove.getBoard())){
-			score = -100;
-		}
-		return score;
 	}
 
 	/**
@@ -131,18 +129,22 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.Player {
 		PossibleMove retMove = secondOptions.get(which);
 		return retMove;
 	}
-		
-	public PossibleMove getMoveWithLowestOrth(ArrayList<PossibleMove> moves){
-		int minOrth = 100000;
-		PossibleMove which = moves.get(0);
-		for(int i = 0; i < moves.size(); i++){
-			if(Cat.allLegalMoves(moves.get(i).getBoard()).size()<minOrth){
-				minOrth = Cat.allLegalMoves(moves.get(i).getBoard()).size();
-				which = moves.get(i);
-			}
+	
+	/**
+	 * Scores a single board for the cat
+	 * @param catMove
+	 * @return the score 
+	 */
+	private int score(PossibleMove catMove) {
+		int score = Cat.allLegalMoves(catMove.getBoard()).size();
+		if(Dog.wins(catMove.getBoard())){
+			score += 1000;
 		}
-		return which;
-		
+		if(Cat.wins(catMove.getBoard())){
+			score = -100;
+		}
+		return score;
 	}
+		
 
 }
