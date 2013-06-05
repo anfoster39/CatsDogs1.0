@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 
 import catsdogs.sim.Board;
 import catsdogs.sim.Cat;
+import catsdogs.sim.Dog;
 import catsdogs.sim.Move;
 import catsdogs.sim.PossibleMove;
 
@@ -31,7 +32,7 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.Player {
 		int size = moves.size();
 		int which = r.nextInt(size);
 		while(!ok){
-			if(!isThreeInARow(moves.get(which), board)){
+			if(!Dog.wins(moves.get(which).getBoard())){
 				ok=true;
 			}else{
 				moves.remove(which);
@@ -43,37 +44,4 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.Player {
 		return moves.get(which);
 		
 	}
-	private boolean isThreeInARow(PossibleMove move, int[][]board){
-
-		for(int i = 0; i < 7; i++){
-			int catCt = 0;
-			if((move.getX()==i+1 && move.getDirection()==Move.LEFT )||(move.getX()==i-1&&move.getDirection()==Move.RIGHT)){
-				catCt++;
-			}
-			for(int j = 0; j < 7; j++){
-				if(board[i][j]==Board.CAT ){
-					catCt++;
-				}
-			}
-			if(catCt>2){
-				return true;
-			}
-		}
-		for(int j = 0; j < 7; j++){
-			int catCt = 0;
-			if((move.getY()==j+1 &&move.getDirection()==Move.UP )||(move.getY()==j-1 &&move.getDirection()==Move.DOWN)){
-				catCt++;
-			}
-			for(int i = 0; i < 7; i++){
-				if(board[i][j]==Board.CAT){
-					catCt++;
-				}
-			}
-			if(catCt>2){
-				return true;
-			}
-		}
-		return false;
-	}
-	
 }
