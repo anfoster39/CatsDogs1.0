@@ -37,57 +37,13 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.Player {
 		}
 		
 	}
-	public int getOrthCount(int[][] board){
-		int orthCt = 0;
 
-		for(int i = 0; i < 7; i++){
-			for(int j = 0; j < 7; j++){
-				if(board[i][j]==Board.CAT){
-					Point2D.Double ptHere = new Point2D.Double(i,j);
-					orthCt+=getAdjacentCount(board, ptHere);
-				}
-			}
-		}
-		
-		return orthCt;
-	}
-	public int getAdjacentCount(int[][] board, Point2D.Double pt) {
-		int adjCt = 0;
-		try{
-			if(board[(int) pt.x][(int) (pt.y+1)]==Board.DOG){
-				adjCt++;
-			}
-		}catch(java.lang.ArrayIndexOutOfBoundsException e){
-			
-		}
-		try{
-
-			if(board[(int) pt.x][(int) (pt.y-1)]==Board.DOG){
-				adjCt++;
-			}
-		}catch(java.lang.ArrayIndexOutOfBoundsException e){
-			
-		}try{
-			if(board[(int) pt.x+1][(int) (pt.y)]==Board.DOG){
-				adjCt++;
-			}
-		}catch(java.lang.ArrayIndexOutOfBoundsException e){
-			
-		}try{
-			if(board[(int) pt.x-1][(int) (pt.y)]==Board.DOG){
-				adjCt++;
-			}
-		}catch(java.lang.ArrayIndexOutOfBoundsException e){
-			
-		}
-		return adjCt;
-	}
 	public PossibleMove getMoveWithLowestOrth(ArrayList<PossibleMove> moves){
 		int minOrth = 100000;
 		PossibleMove which = moves.get(0);
 		for(int i = 0; i < moves.size(); i++){
-			if(getOrthCount(moves.get(i).getBoard())<minOrth){
-				minOrth = getOrthCount(moves.get(i).getBoard());
+			if(Cat.allLegalMoves(moves.get(i).getBoard()).size()<minOrth){
+				minOrth = Cat.allLegalMoves(moves.get(i).getBoard()).size();
 				which = moves.get(i);
 			}
 		}
