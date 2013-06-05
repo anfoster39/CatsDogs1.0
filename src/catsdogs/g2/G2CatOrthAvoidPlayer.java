@@ -37,7 +37,27 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.Player {
 		}
 		
 	}
-
+	public PossibleMove getBestDogSingleMove(int[][] board){
+		
+		return null;
+	}
+	public ArrayList<PossibleMove> dogBestMoves(ArrayList<PossibleMove> moves){
+		ArrayList<PossibleMove> dogMoves = new ArrayList<PossibleMove>();
+		for(PossibleMove pm : moves){
+			dogMoves.add(getBestDogSingleMove(pm.getBoard()));
+		}
+		
+		return dogMoves;
+		
+	}
+	public PossibleMove returnBestMove(ArrayList<PossibleMove> dogMoves){
+		PossibleMove best;
+		for(PossibleMove pm : dogMoves){
+			
+		}
+		
+		return best;
+	}
 	public PossibleMove getMoveWithLowestOrth(ArrayList<PossibleMove> moves){
 		int minOrth = 100000;
 		PossibleMove which = moves.get(0);
