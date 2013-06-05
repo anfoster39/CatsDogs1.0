@@ -41,12 +41,15 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.Player {
 		ArrayList<PossibleMove> moves = Cat.allLegalMoves(currentBoard);
 		//HashMap<PossibleMove, Integer> scores = new HashMap<PossibleMove, Integer>();
 		PossibleMove bestMove = null;
-		int bestScore = 1000;
+		int bestScore = 10000;
 		for (PossibleMove move: moves){
-			if (getFutureScore(move) < bestScore){
+			int score = getFutureScore(move);
+			if (score < bestScore){
+				bestScore = score;
 				bestMove = move;
 			}
 		}
+		logger.info("Cat move score " + bestScore);
 		return bestMove;
 	}
 	
@@ -69,18 +72,26 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.Player {
 	}
 
 	/**
-	 * Scores the board for the cat
+	 * Scores a single board for the cat
 	 * @param catMove
-	 * @return
+	 * @return the score 
 	 */
 	private int score(PossibleMove catMove) {
 		int score = Cat.allLegalMoves(catMove.getBoard()).size();
 		if(Dog.wins(catMove.getBoard())){
 			score += 1000;
 		}
+		if(Cat.wins(catMove.getBoard())){
+			score = -100;
+		}
 		return score;
 	}
 
+	/**
+	 * Anticipates which move the dog will pick
+	 * @param moves
+	 * @return
+	 */
 	public PossibleMove getBestDogSingleMove(ArrayList<PossibleMove> moves){
 		  Random r = new Random();
 
