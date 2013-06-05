@@ -15,8 +15,6 @@ import catsdogs.sim.PossibleMove;
 
 public class G2CatOrthAvoidPlayer extends catsdogs.sim.Player {
 	private Logger logger = Logger.getLogger(this.getClass()); // for logging
-	private final Random r = new Random();
-
 
 	public String getName() {
 		return "G2CatOrthAvoidPlayer";
@@ -28,31 +26,15 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.Player {
 	}
 	public Move doMove(int[][] board) {
 		ArrayList<PossibleMove> moves = Cat.allLegalMoves(board);
-		boolean ok = false;
-		int minOrth = 100000;
-		PossibleMove which = moves.get(0);
-		for(int i = 0; i < moves.size(); i++){
-			if(getOrthCount(moves.get(i).getBoard())<minOrth){
-				minOrth = getOrthCount(moves.get(i).getBoard());
-				which = moves.get(i);
-			}
-		}
-		while(!ok){
+		PossibleMove which = getMoveWithLowestOrth(moves);
+		while(true){
 			if(!Dog.wins(which.getBoard())){
 				return which;
 			}else{
-				minOrth = 100000;
 				moves.remove(which);
-				for(int i = 0; i < moves.size(); i++){
-					if(getOrthCount(moves.get(i).getBoard())<minOrth){
-						minOrth = getOrthCount(moves.get(i).getBoard());
-						which = moves.get(i);
-					}
-				}
+				 which = getMoveWithLowestOrth(moves);
 			}
 		}
-		
-		return which;
 		
 	}
 	public int getOrthCount(int[][] board){
@@ -99,6 +81,18 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.Player {
 			
 		}
 		return adjCt;
+	}
+	public PossibleMove getMoveWithLowestOrth(ArrayList<PossibleMove> moves){
+		int minOrth = 100000;
+		PossibleMove which = moves.get(0);
+		for(int i = 0; i < moves.size(); i++){
+			if(getOrthCount(moves.get(i).getBoard())<minOrth){
+				minOrth = getOrthCount(moves.get(i).getBoard());
+				which = moves.get(i);
+			}
+		}
+		return which;
+		
 	}
 
 }
