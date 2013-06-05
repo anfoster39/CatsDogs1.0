@@ -29,21 +29,30 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.Player {
 	public Move doMove(int[][] board) {
 		ArrayList<PossibleMove> moves = Cat.allLegalMoves(board);
 		boolean ok = false;
-		int size = moves.size();
-		int which = r.nextInt(size);
-		while(!ok){
-			if(!Dog.wins(moves.get(which).getBoard())){
-				ok=true;
-			}else{
-				moves.remove(which);
-
-				 size = moves.size();
-				 which = r.nextInt(size);
+		int minOrth = 100000;
+		PossibleMove which = moves.get(0);
+		for(int i = 0; i < moves.size(); i++){
+			if(getOrthCount(moves.get(i).getBoard())<minOrth){
+				minOrth = getOrthCount(moves.get(i).getBoard());
+				which = moves.get(i);
 			}
 		}
-		int test = getOrthCount(board);
-		logger.info(test);
-		return moves.get(which);
+		while(!ok){
+			if(!Dog.wins(which.getBoard())){
+				return which;
+			}else{
+				minOrth = 100000;
+				moves.remove(which);
+				for(int i = 0; i < moves.size(); i++){
+					if(getOrthCount(moves.get(i).getBoard())<minOrth){
+						minOrth = getOrthCount(moves.get(i).getBoard());
+						which = moves.get(i);
+					}
+				}
+			}
+		}
+		
+		return which;
 		
 	}
 	public int getOrthCount(int[][] board){
