@@ -1,10 +1,12 @@
 package catsdogs.g2;
 
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Random;
 
 import org.apache.log4j.Logger;
 
+import catsdogs.sim.Board;
 import catsdogs.sim.Cat;
 import catsdogs.sim.Dog;
 import catsdogs.sim.Move;
@@ -143,8 +145,82 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.Player {
 		if(Cat.wins(catMove.getBoard())){
 			score = -100;
 		}
+		score += findCatDistances(catMove);
 		return score;
 	}
+	
+	private int findCatDistances(PossibleMove move){
+		//find the older location
+		//find the new location
+		//see if they are closer or farther from the other cats
 		
+		
+		int oldDistance = 0;
+		int newDistance = 0;
+		
+		//get current cat distances
+		ArrayList<Point2D.Double> cats = findCats(move.getBoard());
+		for (Point2D.Double cat1 : cats){
+			for (Point2D.Double cat2: cats){
+				oldDistance += cat1.distance(cat2);
+			}
+		}
+		
+		//possible null pointer exception
+		//get old cat distances
+		ArrayList<Point2D.Double> oldCats = getOldCatLocations(move);
+		for (Point2D.Double cat1 : oldCats){
+			for (Point2D.Double cat2: oldCats){
+				newDistance += cat1.distance(cat2);
+			}
+		}
+		
+		//return differences 
+		if (newDistance < oldDistance){
+			return -1;
+		}
+		if (newDistance > oldDistance){
+			return 1;
+		}
+		return 0;
+		
+	}
+	
+	private ArrayList<Point2D.Double> findCats(int[][] board){
+		ArrayList<Point2D.Double> cats = new ArrayList<Point2D.Double>();
+		for (int x = 0; x < board.length; x++){
+			for (int y = 0; y < board[x].length; y++){
+				if(board[x][y] == Board.CAT){
+					cats.add(new Point2D.Double(x,y));
+				}
+			}
+		}
+		return cats;
+	}
+	
+	private ArrayList<Point2D.Double> getOldCatLocations(PossibleMove move){
+		PossibleMove oldBoard = null;
+		switch (move.getDirection()){
+			//up
+			case 0:
+				oldBoard = new PossibleMove(move.getX(), move.getY(), 2, move.getBoard());
+				break;
+			//right
+			case 1:
+				oldBoard = new PossibleMove(move.getX(), move.getY(), 3, move.getBoard());
+				break;
+			//down
+			case 2:
+				oldBoard = new PossibleMove(move.getX(), move.getY(), 0, move.getBoard());
+				break;
+			//left
+			case 3:
+				oldBoard = new PossibleMove(move.getX(), move.getY(), 1, move.getBoard());
+				break;
+		}
+		return findCats(oldBoard.getBoard());
+		
+	}
+		 
 
 }
