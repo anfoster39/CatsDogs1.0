@@ -35,13 +35,20 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.CatPlayer {
 	 * @return
 	 */
 	public PossibleMove getBestCatMove(int[][] currentBoard, int round){
-		//looks at each option 
-		ArrayList<PossibleMove> moves = Cat.allLegalMoves(currentBoard);
+		//looks at each option
+		ArrayList<PossibleMove> moves;
+		if(round % 3 > 0){//in this case this is a dog move
+			moves = Dog.allLegalMoves(currentBoard);
+		}else{//in this case this is a cat move
+			moves = Cat.allLegalMoves(currentBoard);
+			}
+		//if at the end of a game
 		if (moves.size() == 0){
 			return null;
 		}
 		//HashMap<PossibleMove, Integer> scores = new HashMap<PossibleMove, Integer>();
 		PossibleMove bestMove = null;
+		
 		int bestScore = 10000;
 		int size = moves.size();
 		//throws away any suicide moves
@@ -52,11 +59,11 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.CatPlayer {
 			}
 		}
 		//if there are no ok moves, return a random move
-		
 		if(moves2keep.size() == 0){
 		//	logger.info("Round " + round + "Moves " + moves.toString());
 			return moves.get(0);
 		}
+		
 		int round1 = round+1;
 		for (PossibleMove move: moves2keep){
 			int score = getFutureScore(move, round1);
@@ -100,7 +107,9 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.CatPlayer {
 		 nextMoves = Dog.allLegalMoves(move.getBoard());
 		}else{//in this case this is a cat move
 			nextMoves = Cat.allLegalMoves(move.getBoard());
-		}		if (nextMoves.size() == 0){
+		}
+		round += 1;
+		if (nextMoves.size() == 0){
 			return 200;
 		}
 		int best = 1000;
@@ -124,7 +133,7 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.CatPlayer {
 				best = score; 
 			}
 		}
-		round += 1;
+		
 
 		return best;
 	}
