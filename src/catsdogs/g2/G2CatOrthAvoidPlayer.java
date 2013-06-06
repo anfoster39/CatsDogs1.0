@@ -14,7 +14,7 @@ import catsdogs.sim.PossibleMove;
 
 public class G2CatOrthAvoidPlayer extends catsdogs.sim.CatPlayer {
 	private Logger logger = Logger.getLogger(this.getClass()); // for logging
-	private final int recursiveLimit = 2;
+	private final int recursiveLimit = 3;
 
 	public String getName() {
 		return "G2CatOrthAvoidPlayer";
@@ -49,7 +49,7 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.CatPlayer {
 		//HashMap<PossibleMove, Integer> scores = new HashMap<PossibleMove, Integer>();
 		PossibleMove bestMove = null;
 		
-		int bestScore = 10000;
+		
 		int size = moves.size();
 		//throws away any suicide moves
 		ArrayList<PossibleMove> moves2keep = new ArrayList<PossibleMove>();
@@ -65,12 +65,26 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.CatPlayer {
 		}
 		
 		int round1 = round+1;
-		for (PossibleMove move: moves2keep){
-			int score = getFutureScore(move, round1);
-			if (score < bestScore ){
-				bestScore = score;
-				bestMove = move;
+		if(round-1 % 3 > 0){//in this case this is a dog move
+			int bestScore = 10000;
+			for (PossibleMove move: moves2keep){
+				int score = getFutureScore(move, round1);
+				if (score < bestScore ){
+					bestScore = score;
+					bestMove = move;
+				}
 			}
+		}
+			else{//in this case this is a cat move
+				int bestScore = -10000;
+				for (PossibleMove move: moves2keep){
+					int score = getFutureScore(move, round1);
+					if (score > bestScore ){
+						bestScore = score;
+						bestMove = move;
+					}
+				}
+		
 		}
 		return bestMove;
 	}
@@ -136,24 +150,6 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.CatPlayer {
 		
 
 		return best;
-	}
-
-	/**
-	 * Anticipates which move the dog will pick
-	 * @param moves
-	 * @return
-	 */
-	public PossibleMove getBestDogSingleMove(ArrayList<PossibleMove> moves){
-		  Random r = new Random();
-
-		int size = moves.size();
-		int which = r.nextInt(size);
-		PossibleMove firstM = moves.get(which);
-		ArrayList<PossibleMove> secondOptions = Dog.allLegalMoves(firstM.getBoard());
-		size = secondOptions.size();
-		which = r.nextInt(size);
-		PossibleMove retMove = secondOptions.get(which);
-		return retMove;
 	}
 	
 	/**
