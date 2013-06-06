@@ -105,7 +105,7 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.Player {
 		}
 		int best = 1000;
 		for (PossibleMove catMove: nextMoves){
-			//if getCatMoves 
+			//if getBestCatMoves returns null, which means that the game has ended.
 			PossibleMove pm = getBestCatMove(catMove.getBoard(), round);
 			int score=0;
 			if(pm ==null){
