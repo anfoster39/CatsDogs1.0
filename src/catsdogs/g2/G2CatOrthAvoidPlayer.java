@@ -12,9 +12,9 @@ import catsdogs.sim.Dog;
 import catsdogs.sim.Move;
 import catsdogs.sim.PossibleMove;
 
-public class G2CatOrthAvoidPlayer extends catsdogs.sim.Player {
+public class G2CatOrthAvoidPlayer extends catsdogs.sim.CatPlayer {
 	private Logger logger = Logger.getLogger(this.getClass()); // for logging
-	private final int recursiveLimit = 3;
+	private final int recursiveLimit = 2;
 
 	public String getName() {
 		return "G2CatOrthAvoidPlayer";
@@ -149,7 +149,7 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.Player {
 	 * @return the score 
 	 */
 	private int score(int [][] oldBoard, PossibleMove catMove) {
-		int score =0;//Cat.allLegalMoves(catMove.getBoard()).size();
+		int score =Cat.allLegalMoves(catMove.getBoard()).size();
 		/*
 		if(isTwoInARow(oldBoard, catMove.getBoard())==-1){
 			score-= 5;

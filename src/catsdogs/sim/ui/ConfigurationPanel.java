@@ -41,7 +41,8 @@ import javax.swing.event.ListSelectionListener;
 
 import catsdogs.sim.GameConfig;
 import catsdogs.sim.GameEngine;
-import catsdogs.sim.Player;
+import catsdogs.sim.CatPlayer;
+import catsdogs.sim.DogPlayer;
 
 
 
@@ -96,7 +97,7 @@ public final class ConfigurationPanel extends JPanel implements ChangeListener, 
 		panel.add(catPlayerBox);
 		layout.setConstraints(panel, c);
 		this.add(panel);
-		config.setCatPlayerClass((Class<Player>) catPlayerBox.getSelectedItem());
+		config.setCatPlayerClass((Class<CatPlayer>) catPlayerBox.getSelectedItem());
 
 		
 		panel = new JPanel(new FlowLayout());
@@ -110,7 +111,7 @@ public final class ConfigurationPanel extends JPanel implements ChangeListener, 
 		panel.add(dogPlayerBox);
 		layout.setConstraints(panel, c);
 		this.add(panel);
-		config.setDogPlayerClass((Class<Player>) dogPlayerBox.getSelectedItem());
+		config.setDogPlayerClass((Class<DogPlayer>) dogPlayerBox.getSelectedItem());
 
 		
 		
@@ -158,13 +159,13 @@ public final class ConfigurationPanel extends JPanel implements ChangeListener, 
 		{
 			// config.setActivePlayer((Class)arg0.getItem());
 			catPlayerClass = (Class) arg0.getItem();
-			config.setCatPlayerClass((Class<Player>) catPlayerBox.getSelectedItem());
+			config.setCatPlayerClass((Class<CatPlayer>) catPlayerBox.getSelectedItem());
 		}
 		else if (arg0.getSource().equals(dogPlayerBox) && arg0.getStateChange() == ItemEvent.SELECTED)
 		{
 			// config.setActivePlayer((Class)arg0.getItem());
 			dogPlayerClass = (Class) arg0.getItem();
-			config.setDogPlayerClass((Class<Player>) dogPlayerBox.getSelectedItem());
+			config.setDogPlayerClass((Class<DogPlayer>) dogPlayerBox.getSelectedItem());
 		}
 	}
 

@@ -55,8 +55,8 @@ public final class GameEngine
 	private ArrayList<GameListener> gameListeners;
 	private Logger log;
 	boolean initDone = false;
-	private Player catPlayer;
-	private Player dogPlayer;
+	private CatPlayer catPlayer;
+	private DogPlayer dogPlayer;
 	private static final Random random = new Random();
 	private final Logger logger = Logger.getLogger(this.getClass());
 	
@@ -124,7 +124,7 @@ public final class GameEngine
 			}
 			else if (turn == 1) {
 				long start = System.currentTimeMillis();
-				result = moveDog();
+				result = moveDog(1);
 				long end = System.currentTimeMillis();
 				if (end - start > GameConfig.TIME_LIMIT) {
 					logger.info("Dog took too long to move (" + (end-start) + "ms)!");
@@ -136,7 +136,7 @@ public final class GameEngine
 			}
 			else if (turn == 2) {
 				long start = System.currentTimeMillis();
-				result = moveDog();
+				result = moveDog(2);
 				long end = System.currentTimeMillis();
 				if (end - start > GameConfig.TIME_LIMIT) {
 					logger.info("Dog took too long to move (" + (end-start) + "ms)!");
@@ -204,9 +204,17 @@ public final class GameEngine
 	}
 	
 	
-	private boolean moveDog() {
+	private boolean moveDog(int turn) {
+		
+		Move m = null;
+		if (turn == 1) m = dogPlayer.doMove1(Board.cloneBoard(board.objects));
+		else if (turn == 2) m = dogPlayer.doMove2(Board.cloneBoard(board.objects));
+		else {
+			// ERROR!!
+			logger.error("Game is in illegal state trying to move dog: turn="+turn);
+			return false;
+		}
 
-		Move m = dogPlayer.doMove(Board.cloneBoard(board.objects));
 		logger.info("Dog at " + m.getX() + ", " + m.getY() + " trying to move " + m.getDirection());
 		// check for illegal move, e.g. if object is a Cat
 		int x = m.getX();

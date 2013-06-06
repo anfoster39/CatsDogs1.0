@@ -50,7 +50,7 @@ import catsdogs.sim.GameListener;
  */
 public final class GUI extends JFrame implements ActionListener, GameListener, ChangeListener
 {
-	private final static String VERSION = "1.0";
+	private final static String VERSION = "1.1";
 	
 	private GameEngine engine;
 	private static final long serialVersionUID = 1L;

@@ -13,7 +13,7 @@ import catsdogs.sim.PossibleMove;
 
 
 
-public class RandomDogPlayer extends catsdogs.sim.Player {
+public class RandomDogPlayer extends catsdogs.sim.DogPlayer {
 
 	private Logger logger = Logger.getLogger(this.getClass()); // for logging
 	
@@ -28,7 +28,11 @@ public class RandomDogPlayer extends catsdogs.sim.Player {
 
 	}
 
-	public Move doMove(int[][] board) {
+	public Move doMove1(int[][] board) { return makeRandomMove(board); }
+
+	public Move doMove2(int[][] board) { return makeRandomMove(board); }
+	
+	private Move makeRandomMove(int[][] board) {
 		
 		// find all legal moves
 		ArrayList<PossibleMove> moves = Dog.allLegalMoves(board);

@@ -27,28 +27,28 @@ public class GameConfig implements Cloneable{
 	public static int density = 50;
 	public static int turnProbability = 50; // TODO: make this configurable
 	int max_rounds = max_rounds_max;
-	private ArrayList<Class<Player>> availableCatPlayers;
-	private ArrayList<Class<Player>> availableDogPlayers;
-	private Class<Player> catPlayerClass;
-	private Class<Player> dogPlayerClass;
+	private ArrayList<Class<CatPlayer>> availableCatPlayers;
+	private ArrayList<Class<DogPlayer>> availableDogPlayers;
+	private Class<CatPlayer> catPlayerClass;
+	private Class<DogPlayer> dogPlayerClass;
 	public static Random random;
 	private Properties props;
 	private String confFileName;
 	private Logger log = Logger.getLogger(this.getClass());
 
-	public Class<Player> getCatPlayerClass() {
+	public Class<CatPlayer> getCatPlayerClass() {
 		return catPlayerClass;
 	}
 
-	public void setCatPlayerClass(Class<Player> playerClass) {
+	public void setCatPlayerClass(Class<CatPlayer> playerClass) {
 		this.catPlayerClass = playerClass;
 	}
 
-	public Class<Player> getDogPlayerClass() {
+	public Class<DogPlayer> getDogPlayerClass() {
 		return dogPlayerClass;
 	}
 
-	public void setDogPlayerClass(Class<Player> playerClass) {
+	public void setDogPlayerClass(Class<DogPlayer> playerClass) {
 		this.dogPlayerClass = playerClass;
 	}
 
@@ -70,8 +70,8 @@ public class GameConfig implements Cloneable{
 	public GameConfig(String filename) {
 		confFileName = filename;
 		props = new Properties();
-		availableCatPlayers = new ArrayList<Class<Player>>();
-		availableDogPlayers = new ArrayList<Class<Player>>();
+		availableCatPlayers = new ArrayList<Class<CatPlayer>>();
+		availableDogPlayers = new ArrayList<Class<DogPlayer>>();
 		load();
 	}
 
@@ -106,7 +106,7 @@ public class GameConfig implements Cloneable{
 			String[] names = s.split(" ");
 			for (int i = 0; i < names.length; i++) {
 				try {
-					availableCatPlayers.add((Class<Player>) Class
+					availableCatPlayers.add((Class<CatPlayer>) Class
 							.forName(names[i]));
 				} catch (ClassNotFoundException e) {
 					log.error("[Configuration] Class not found: " + names[i]);
@@ -122,7 +122,7 @@ public class GameConfig implements Cloneable{
 			String[] names = s.split(" ");
 			for (int i = 0; i < names.length; i++) {
 				try {
-					availableDogPlayers.add((Class<Player>) Class
+					availableDogPlayers.add((Class<DogPlayer>) Class
 							.forName(names[i]));
 				} catch (ClassNotFoundException e) {
 					log.error("[Configuration] Class not found: " + names[i]);

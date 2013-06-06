@@ -21,10 +21,5 @@ public abstract class Player {
 	 */
 	public abstract void startNewGame();
 
-	/**
-	 * Allows you to move the planes 
-	 */
-	public abstract Move doMove(int[][] board);
-	
 }
 
