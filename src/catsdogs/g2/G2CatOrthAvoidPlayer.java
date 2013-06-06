@@ -138,14 +138,20 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.Player {
 	 * @return the score 
 	 */
 	private int score(int [][] oldBoard, PossibleMove catMove) {
-		int score = Cat.allLegalMoves(catMove.getBoard()).size();
-		if(Dog.wins(catMove.getBoard())){
-			score += 1000;
+		int score =Cat.allLegalMoves(catMove.getBoard()).size();
+		/*
+		if(isTwoInARow(oldBoard, catMove.getBoard())==-1){
+			score-= 5;
 		}
-		if(Cat.wins(catMove.getBoard())){
-			score = -100;
+		if(isTwoInARow(oldBoard, catMove.getBoard())==1){
+			score+= 5;
 		}
-		score += findCatDistances(oldBoard, catMove);
+		if(findCatDistances(oldBoard, catMove)==1){
+			score+= 5;
+		}
+		if(findCatDistances(oldBoard, catMove)==-1){
+			score-= 5;
+		}*/
 		return score;
 	}
 	
@@ -177,10 +183,10 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.Player {
 		
 		//return differences 
 		if (newDistance < oldDistance){
-			return -2;
+			return -1;
 		}
 		if (newDistance > oldDistance){
-			return 2;
+			return 1;
 		}
 		return 0;
 		
@@ -221,6 +227,44 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.Player {
 //		return findCats(oldBoard.getBoard());
 //		
 //	}
-		 
+
+	private int isTwoInARow(int[][] possibleBoard, int[][] previousBoard ){
+		int posCt = howManyInRow(possibleBoard);
+		int prevCt = howManyInRow(previousBoard);
+		if(posCt==prevCt){
+			return 0;
+		}else if(posCt > prevCt){
+			return 1;
+		}else{
+			return -1;
+		}
+	}
+	public int howManyInRow (int[][] board){
+		int doubleRowCt = 0;
+		for(int i = 0; i < 7; i++){
+			int catCt = 0;
+			
+			for(int j = 0; j < 7; j++){
+				if(board[i][j]==Board.CAT ){
+					catCt++;
+				}
+			}
+			if(catCt>1){
+				doubleRowCt++;
+			}
+		}
+		for(int j = 0; j < 7; j++){
+			int catCt = 0;			
+			for(int i = 0; i < 7; i++){
+				if(board[i][j]==Board.CAT){
+					catCt++;
+				}
+			}
+			if(catCt>1){
+				doubleRowCt++;
+			}
+		}
+		return doubleRowCt;
+	}
 
 }
