@@ -79,7 +79,7 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.Player {
 			}
 			int best = 1000;
 			for (PossibleMove catMove: nextCatMoves){
-				int score = score(catMove);
+				int score = score(bestDogMove.getBoard(), catMove);
 				if (score < best){
 					best = score; 
 				}
@@ -104,7 +104,7 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.Player {
 				}
 			}
 			else{
-				score = score(pm);
+				score = score(catMove.getBoard(), pm);
 			}
 			
 			if (score < best){
@@ -137,7 +137,7 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.Player {
 	 * @param catMove
 	 * @return the score 
 	 */
-	private int score(PossibleMove catMove) {
+	private int score(int [][] oldBoard, PossibleMove catMove) {
 		int score = Cat.allLegalMoves(catMove.getBoard()).size();
 		if(Dog.wins(catMove.getBoard())){
 			score += 1000;
@@ -145,11 +145,11 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.Player {
 		if(Cat.wins(catMove.getBoard())){
 			score = -100;
 		}
-		score += findCatDistances(catMove);
+		score += findCatDistances(oldBoard, catMove);
 		return score;
 	}
 	
-	private int findCatDistances(PossibleMove move){
+	private int findCatDistances(int [][] oldBoard, PossibleMove move){
 		//find the older location
 		//find the new location
 		//see if they are closer or farther from the other cats
@@ -168,7 +168,7 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.Player {
 		
 		//possible null pointer exception
 		//get old cat distances
-		ArrayList<Point2D.Double> oldCats = getOldCatLocations(move);
+		ArrayList<Point2D.Double> oldCats = findCats(oldBoard);
 		for (Point2D.Double cat1 : oldCats){
 			for (Point2D.Double cat2: oldCats){
 				newDistance += cat1.distance(cat2);
@@ -177,10 +177,10 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.Player {
 		
 		//return differences 
 		if (newDistance < oldDistance){
-			return -1;
+			return -2;
 		}
 		if (newDistance > oldDistance){
-			return 1;
+			return 2;
 		}
 		return 0;
 		
@@ -198,29 +198,29 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.Player {
 		return cats;
 	}
 	
-	private ArrayList<Point2D.Double> getOldCatLocations(PossibleMove move){
-		PossibleMove oldBoard = null;
-		switch (move.getDirection()){
-			//up
-			case 0:
-				oldBoard = new PossibleMove(move.getX(), move.getY(), 2, move.getBoard());
-				break;
-			//right
-			case 1:
-				oldBoard = new PossibleMove(move.getX(), move.getY(), 3, move.getBoard());
-				break;
-			//down
-			case 2:
-				oldBoard = new PossibleMove(move.getX(), move.getY(), 0, move.getBoard());
-				break;
-			//left
-			case 3:
-				oldBoard = new PossibleMove(move.getX(), move.getY(), 1, move.getBoard());
-				break;
-		}
-		return findCats(oldBoard.getBoard());
-		
-	}
+//	private ArrayList<Point2D.Double> getOldCatLocations(PossibleMove move){
+//		PossibleMove oldBoard = null;
+//		switch (move.getDirection()){
+//			//up
+//			case 0:
+//				oldBoard = new PossibleMove(move.getX(), move.getY(), 2, move.getBoard());
+//				break;
+//			//right
+//			case 1:
+//				oldBoard = new PossibleMove(move.getX(), move.getY(), 3, move.getBoard());
+//				break;
+//			//down
+//			case 2:
+//				oldBoard = new PossibleMove(move.getX(), move.getY(), 0, move.getBoard());
+//				break;
+//			//left
+//			case 3:
+//				oldBoard = new PossibleMove(move.getX(), move.getY(), 1, move.getBoard());
+//				break;
+//		}
+//		return findCats(oldBoard.getBoard());
+//		
+//	}
 		 
 
 }
