@@ -14,7 +14,7 @@ import catsdogs.sim.PossibleMove;
 
 public class G2CatOrthAvoidPlayer extends catsdogs.sim.CatPlayer {
 	private Logger logger = Logger.getLogger(this.getClass()); // for logging
-	private final int recursiveLimit = 3;
+	private final int recursiveLimit = 2;
 
 	public String getName() {
 		return "G2CatOrthAvoidPlayer";
@@ -46,7 +46,6 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.CatPlayer {
 		if (moves.size() == 0){
 			return null;
 		}
-		//HashMap<PossibleMove, Integer> scores = new HashMap<PossibleMove, Integer>();
 		PossibleMove bestMove = null;
 		
 		
@@ -65,21 +64,21 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.CatPlayer {
 		}
 		
 		int round1 = round+1;
-		if(round-1 % 3 > 0){//in this case this is a dog move
-			int bestScore = 10000;
+		if(round % 3 > 0){//in this case this is a dog move
+			int bestScore = -10000;
 			for (PossibleMove move: moves2keep){
 				int score = getFutureScore(move, round1);
-				if (score < bestScore ){
+				if (score > bestScore ){
 					bestScore = score;
 					bestMove = move;
 				}
 			}
 		}
 			else{//in this case this is a cat move
-				int bestScore = -10000;
+				int bestScore = 10000;
 				for (PossibleMove move: moves2keep){
 					int score = getFutureScore(move, round1);
-					if (score > bestScore ){
+					if (score < bestScore ){
 						bestScore = score;
 						bestMove = move;
 					}
@@ -106,14 +105,29 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.CatPlayer {
 			if (nextMoves.size() == 0){
 				return 200;
 			}
-			int best = 1000;
-			for (PossibleMove catMove: nextMoves){
-				int score = score(move.getBoard(), catMove);
-				if (score < best){
-					best = score; 
+			int round1 = round +=1;
+			int bestScore;
+			if(round-1 % 3 > 0){//in this case this is a dog move
+				 bestScore = -10000;
+				for (PossibleMove moveN: nextMoves){
+					int score = getFutureScore(moveN, round1);
+					if (score > bestScore ){
+						bestScore = score;
+					}
 				}
-			}	
-			return best;
+			}
+				else{//in this case this is a cat move
+					 bestScore = 10000;
+					for (PossibleMove moveN: nextMoves){
+						int score = getFutureScore(moveN, round1);
+						if (score < bestScore ){
+							bestScore = score;
+						}
+					}
+			
+			}
+				
+			return bestScore;
 		}
 		
 		ArrayList<PossibleMove> nextMoves;
@@ -126,27 +140,55 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.CatPlayer {
 		if (nextMoves.size() == 0){
 			return 200;
 		}
-		int best = 1000;
-		for (PossibleMove catMove: nextMoves){
-			//if getBestCatMoves returns null, which means that the game has ended.
-			PossibleMove pm = getBestCatMove(catMove.getBoard(), round);
-			int score=0;
-			if(pm ==null){
-				if (Cat.wins(catMove.getBoard()) ){
-				score = -100;
+		int best;
+		if(round-1 % 3 > 0){//in this case this is a dog move
+			 best = -10000;
+			 for (PossibleMove catMove: nextMoves){
+					//if getBestCatMoves returns null, which means that the game has ended.
+					PossibleMove pm = getBestCatMove(catMove.getBoard(), round);
+					int score=0;
+					if(pm ==null){
+						if (Cat.wins(catMove.getBoard()) ){
+						score = -100;
+						}
+						else{
+						score = 100;
+						}
+					}
+					else{
+						score = score(catMove.getBoard(), pm);
+					}
+					
+					if (score > best){
+						best = score; 
+					}
 				}
-				else{
-				score = 100;
-				}
-			}
-			else{
-				score = score(catMove.getBoard(), pm);
-			}
-			
-			if (score < best){
-				best = score; 
-			}
 		}
+			else{//in this case this is a cat move
+				best = 10000;
+				for (PossibleMove catMove: nextMoves){
+					//if getBestCatMoves returns null, which means that the game has ended.
+					PossibleMove pm = getBestCatMove(catMove.getBoard(), round);
+					int score=0;
+					if(pm ==null){
+						if (Cat.wins(catMove.getBoard()) ){
+						score = -100;
+						}
+						else{
+						score = 100;
+						}
+					}
+					else{
+						score = score(catMove.getBoard(), pm);
+					}
+					
+					if (score < best){
+						best = score; 
+					}
+				}
+		
+		}		
+		
 		
 
 		return best;
@@ -159,13 +201,13 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.CatPlayer {
 	 */
 	private int score(int [][] oldBoard, PossibleMove catMove) {
 		int score =Cat.allLegalMoves(catMove.getBoard()).size();
-
+/*
 		if(isTwoInARow(oldBoard, catMove.getBoard())==-1){
 			score-= 5;
 		}
 		if(isTwoInARow(oldBoard, catMove.getBoard())==1){
 			score+= 5;
-		}
+		}*/
 //		if(findCatDistances(oldBoard, catMove)==1){
 //			score+= 5;
 //		}
