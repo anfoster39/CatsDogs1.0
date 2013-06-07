@@ -41,15 +41,13 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.CatPlayer {
 			moves = Dog.allLegalMoves(currentBoard);
 		}else{//in this case this is a cat move
 			moves = Cat.allLegalMoves(currentBoard);
-			}
+		}
+		int size = moves.size();
 		//if at the end of a game
-		if (moves.size() == 0){
+		if (size == 0){
 			return null;
 		}
-		PossibleMove bestMove = null;
-		
-		
-		int size = moves.size();
+		PossibleMove myBestMove = null;
 		//throws away any suicide moves
 		ArrayList<PossibleMove> moves2keep = new ArrayList<PossibleMove>();
 		if(round % 3 < 1){
@@ -67,29 +65,29 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.CatPlayer {
 			return moves.get(0);
 		}
 		
-		int round1 = round+1;
+		int roundIncremented = round+1;
 		if(round % 3 > 0){//in this case this is a dog move
-			int bestScore = -10000;
-			for (PossibleMove move: moves2keep){
-				int score = getFutureScore(move, round1);
-				if (score > bestScore ){
-					bestScore = score;
-					bestMove = move;
+			int myBestDogScore = -10000;
+			for (PossibleMove keptMoveDogRound: moves2keep){
+				int bestScoreFromThisMovePath = getFutureScore(keptMoveDogRound, roundIncremented);
+				if (bestScoreFromThisMovePath > myBestDogScore ){
+					myBestDogScore = bestScoreFromThisMovePath;
+					myBestMove = keptMoveDogRound;
 				}
 			}
 		}
 			else{//in this case this is a cat move
-				int bestScore = 10000;
-				for (PossibleMove move: moves2keep){
-					int score = getFutureScore(move, round1);
-					if (score < bestScore ){
-						bestScore = score;
-						bestMove = move;
+				int myBestCatScore = 10000;
+				for (PossibleMove keptMoveCatRound: moves2keep){
+					int bestScoreFromThisMovePath = getFutureScore(keptMoveCatRound, roundIncremented);
+					if (bestScoreFromThisMovePath < myBestCatScore ){
+						myBestCatScore = bestScoreFromThisMovePath;
+						myBestMove = keptMoveCatRound;
 					}
 				}
 		
 		}
-		return bestMove;
+		return myBestMove;
 	}
 	
 	
@@ -98,104 +96,92 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.CatPlayer {
 	 * @return
 	 */
 	private Integer getFutureScore(PossibleMove move, int round) {
-		if (round >= recursiveLimit){
-			
-			ArrayList<PossibleMove> nextMoves;
-			if(round % 3 >0){//in this case this is a dog move
-			 nextMoves = Dog.allLegalMoves(move.getBoard());
-			}else{//in this case this is a cat move
-				nextMoves = Cat.allLegalMoves(move.getBoard());
-			}
-			if (nextMoves.size() == 0){
-				return 200;
-			}
-			int round1 = round +=1;
-			int bestScore;
-			if(round-1 % 3 > 0){//in this case this is a dog move
-				 bestScore = -10000;
-				for (PossibleMove moveN: nextMoves){
-					int score = score(move.getBoard(), moveN);
-					if (score > bestScore ){
-						bestScore = score;
+		if (round >= recursiveLimit){//if this is the last iteration, and recursion has ended
+			if(round % 3 > 0){//in this case this is a dog move
+				ArrayList<PossibleMove> nextDogMoves = Dog.allLegalMoves(move.getBoard());
+				if (nextDogMoves.size() == 0){
+					return 200;
+				}
+				int endRecursionBestDogScore = -10000;
+				for (PossibleMove eachNextDogMove: nextDogMoves){
+					int thisMovebottomLevelScore = score(move.getBoard(), eachNextDogMove);
+					if (thisMovebottomLevelScore > endRecursionBestDogScore ){
+						endRecursionBestDogScore = thisMovebottomLevelScore;
 					}
 				}
+				return endRecursionBestDogScore;
 			}
-				else{//in this case this is a cat move
-					 bestScore = 10000;
-					for (PossibleMove moveN: nextMoves){
-						int score = score(move.getBoard(), moveN);
-						if (score < bestScore ){
-							bestScore = score;
-						}
+			else{//in this case this is a cat move
+				ArrayList<PossibleMove> nextCatMoves  = Cat.allLegalMoves(move.getBoard());
+				if (nextCatMoves.size() == 0){
+					return 200;
+				}
+				int endRecursionBestCatScore = 10000;
+				for (PossibleMove eachNextCatMove: nextCatMoves){
+					int thisMovebottomLevelScore = score(move.getBoard(), eachNextCatMove);
+					if (thisMovebottomLevelScore < endRecursionBestCatScore ){
+						endRecursionBestCatScore = thisMovebottomLevelScore;
 					}
-			
+				}
+				return endRecursionBestCatScore;
 			}
-				
-			return bestScore;
 		}
-		
+		///////If this is reached, recursion is continuing
 		ArrayList<PossibleMove> nextMoves;
-		if(round % 3 >0){//in this case this is a dog move
-		 nextMoves = Dog.allLegalMoves(move.getBoard());
+		if(round % 3 > 0){//in this case this is a dog move
+			nextMoves = Dog.allLegalMoves(move.getBoard());
 		}else{//in this case this is a cat move
 			nextMoves = Cat.allLegalMoves(move.getBoard());
 		}
-		round += 1;
+		int roundIncremented = round+1;
 		if (nextMoves.size() == 0){
 			return 200;
 		}
-		int best;
-		if(round-1 % 3 > 0){//in this case this is a dog move
-			 best = -10000;
-			 for (PossibleMove catMove: nextMoves){
-					//if getBestCatMoves returns null, which means that the game has ended.
-					PossibleMove pm = getBestCatMove(catMove.getBoard(), round);
-					int score=0;
-					if(pm ==null){
-						if (Cat.wins(catMove.getBoard()) ){
-						score = -100;
-						}
-						else{
-						score = 100;
-						}
+		int continuingRecursionBestScore;
+		if(round % 3 > 0){//in this case this is a dog move
+			continuingRecursionBestScore = -10000;
+			for (PossibleMove eachDogMove: nextMoves){
+				//if getBestCatMoves returns null, which means that the game has ended.
+				PossibleMove pm = getBestCatMove(eachDogMove.getBoard(), roundIncremented);
+				int eachDogMoveScore=0;
+				if(pm ==null){
+					if (Cat.wins(eachDogMove.getBoard()) ){
+						eachDogMoveScore = -100;
 					}
 					else{
-						score = score(catMove.getBoard(), pm);
-					}
-					
-					if (score > best){
-						best = score; 
+						eachDogMoveScore = 100;
 					}
 				}
-		}
-			else{//in this case this is a cat move
-				best = 10000;
-				for (PossibleMove catMove: nextMoves){
-					//if getBestCatMoves returns null, which means that the game has ended.
-					PossibleMove pm = getBestCatMove(catMove.getBoard(), round);
-					int score=0;
-					if(pm ==null){
-						if (Cat.wins(catMove.getBoard()) ){
-						score = -100;
-						}
-						else{
-						score = 100;
-						}
+				else{
+					eachDogMoveScore = score(eachDogMove.getBoard(), pm);
+				}
+				if (eachDogMoveScore > continuingRecursionBestScore){
+					continuingRecursionBestScore = eachDogMoveScore; 
+				}
+			}
+		}else{//in this case this is a cat move
+			continuingRecursionBestScore = 10000;
+			for (PossibleMove catMove: nextMoves){
+				//if getBestCatMoves returns null, which means that the game has ended.
+				PossibleMove pm = getBestCatMove(catMove.getBoard(), roundIncremented);
+				int score=0;
+				if(pm ==null){
+					if (Cat.wins(catMove.getBoard()) ){
+					score = -100;
 					}
 					else{
-						score = score(catMove.getBoard(), pm);
-					}
-					
-					if (score < best){
-						best = score; 
+					score = 100;
 					}
 				}
-		
+				else{
+					score = score(catMove.getBoard(), pm);
+				}	
+				if (score < continuingRecursionBestScore){
+					continuingRecursionBestScore = score; 
+				}
+			}
 		}		
-		
-		
-
-		return best;
+		return continuingRecursionBestScore;
 	}
 	
 	/**
@@ -204,7 +190,7 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.CatPlayer {
 	 * @return the score 
 	 */
 	private int score(int [][] oldBoard, PossibleMove catMove) {
-		int score =0;//Cat.allLegalMoves(catMove.getBoard()).size()*10;
+		int score =Cat.allLegalMoves(catMove.getBoard()).size();
 
 		/*if(isTwoInARow(oldBoard, catMove.getBoard())==-1){
 			score-= 5;
