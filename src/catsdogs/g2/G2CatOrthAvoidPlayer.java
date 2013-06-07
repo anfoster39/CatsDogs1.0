@@ -204,9 +204,9 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.CatPlayer {
 	 * @return the score 
 	 */
 	private int score(int [][] oldBoard, PossibleMove catMove) {
-		int score =Cat.allLegalMoves(catMove.getBoard()).size();
-/*
-		if(isTwoInARow(oldBoard, catMove.getBoard())==-1){
+		int score =0;//Cat.allLegalMoves(catMove.getBoard()).size()*10;
+
+		/*if(isTwoInARow(oldBoard, catMove.getBoard())==-1){
 			score-= 5;
 		}
 		if(isTwoInARow(oldBoard, catMove.getBoard())==1){
@@ -270,30 +270,6 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.CatPlayer {
 		return cats;
 	}
 	
-//	private ArrayList<Point2D.Double> getOldCatLocations(PossibleMove move){
-//		PossibleMove oldBoard = null;
-//		switch (move.getDirection()){
-//			//up
-//			case 0:
-//				oldBoard = new PossibleMove(move.getX(), move.getY(), 2, move.getBoard());
-//				break;
-//			//right
-//			case 1:
-//				oldBoard = new PossibleMove(move.getX(), move.getY(), 3, move.getBoard());
-//				break;
-//			//down
-//			case 2:
-//				oldBoard = new PossibleMove(move.getX(), move.getY(), 0, move.getBoard());
-//				break;
-//			//left
-//			case 3:
-//				oldBoard = new PossibleMove(move.getX(), move.getY(), 1, move.getBoard());
-//				break;
-//		}
-//		return findCats(oldBoard.getBoard());
-//		
-//	}
-
 	private int isTwoInARow(int[][] possibleBoard, int[][] previousBoard ){
 		int posCt = howManyInRow(possibleBoard);
 		int prevCt = howManyInRow(previousBoard);
