@@ -90,7 +90,7 @@ public class G2RecursiveDogPlayer extends catsdogs.sim.DogPlayer {
 				score = 100;
 			}
 			else{
-				score = miniMax(option, ++round, move.getBoard());
+				score = miniMax(option, (round+1), move.getBoard());
 			}
 			if(round % 3 > 0){//in this case this is a dog move (maximize score)
 				if (score > bestscore){
