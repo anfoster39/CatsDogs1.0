@@ -11,7 +11,7 @@ import catsdogs.sim.Dog;
 import catsdogs.sim.Move;
 import catsdogs.sim.PossibleMove;
 
-public class G2RecursivePlayer extends catsdogs.sim.CatPlayer {
+public class G2RecursiveCatPlayer extends catsdogs.sim.CatPlayer {
 	private Logger logger = Logger.getLogger(this.getClass()); // for logging
 	private final int recursiveLimit = 12;
 
