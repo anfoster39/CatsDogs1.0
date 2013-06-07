@@ -13,8 +13,8 @@ import catsdogs.sim.PossibleMove;
 
 public class G2RecursiveDogPlayer extends catsdogs.sim.DogPlayer {
 	private Logger logger = Logger.getLogger(this.getClass()); // for logging
-	private int recursiveLimit = 0;
-	private int recursiveLimitOrig = 0;
+	private int recursiveLimit = 4;
+	private int recursiveLimitOrig = 4;
 
 	public String getName() {
 		return "G2RecursiveDogPlayer";
@@ -47,7 +47,7 @@ public class G2RecursiveDogPlayer extends catsdogs.sim.DogPlayer {
 	public PossibleMove getBestCatMove(int[][] currentBoard, int round){
 		//looks at each option
 		
-		int bestscore = -1000;
+		int bestscore = -10000;
 		PossibleMove bestmove = null;
 		
 		ArrayList<PossibleMove> moves;
@@ -56,10 +56,10 @@ public class G2RecursiveDogPlayer extends catsdogs.sim.DogPlayer {
 		for(PossibleMove option: moves){
 			int score;
 			if(Cat.wins(option.getBoard())){
-				score = -100;
+				score = -1000;
 			}
 			else if(Dog.wins(option.getBoard())){
-				score = 100;
+				score = 1000;
 			}
 			else{
 				score = miniMax(option, (round+1), currentBoard);
@@ -81,9 +81,9 @@ public class G2RecursiveDogPlayer extends catsdogs.sim.DogPlayer {
 
 		int bestscore;
 		if(round % 3 > 0){//in this case this is a dog move (maximize score)
-			bestscore = -10000;
+			bestscore = -100000;
 		}else{ // is cat move and minimizes score
-			bestscore = 10000;
+			bestscore = 100000;
 		}
 	  
 	   ArrayList<PossibleMove> moves;
@@ -96,10 +96,10 @@ public class G2RecursiveDogPlayer extends catsdogs.sim.DogPlayer {
 		for(PossibleMove option: moves){
 			int score;
 			if(Cat.wins(option.getBoard())){
-				score = -100;
+				score = -1000;
 			}
 			else if(Dog.wins(option.getBoard())){
-				score = 100;
+				score = 1000;
 			}
 			else{
 				score = miniMax(option, (round+1), move.getBoard());
@@ -136,23 +136,7 @@ public class G2RecursiveDogPlayer extends catsdogs.sim.DogPlayer {
 	 * @param catMove
 	 * @return the score 
 	 */
-	private int score(int [][] oldBoard, PossibleMove catMove) {
-		int score = Cat.allLegalMoves(catMove.getBoard()).size();
-
-		/*if(isTwoInARow(oldBoard, catMove.getBoard())==-1){
-			score-= 5;
-		}
-		if(isTwoInARow(oldBoard, catMove.getBoard())==1){
-			score+= 5;
-		}*/
-//		if(findCatDistances(oldBoard, catMove)==1){
-//			score+= 5;
-//		}
-//		if(findCatDistances(oldBoard, catMove)==-1){
-//			score-= 5;
-//		}
-		return score;
-	}
+	
 	
 	private int findCatDistances(int [][] oldBoard, PossibleMove move){
 		//find the older location
@@ -218,7 +202,6 @@ public class G2RecursiveDogPlayer extends catsdogs.sim.DogPlayer {
 		int doubleRowCt = 0;
 		for(int i = 0; i < 7; i++){
 			int catCt = 0;
-			
 			for(int j = 0; j < 7; j++){
 				if(board[i][j]==Board.CAT ){
 					catCt++;
@@ -241,7 +224,23 @@ public class G2RecursiveDogPlayer extends catsdogs.sim.DogPlayer {
 		}
 		return doubleRowCt;
 	}
+	private int score(int [][] oldBoard, PossibleMove catMove) {
+		int score = 0;// Cat.allLegalMoves(catMove.getBoard()).size()*10;
 
+		/*if(isTwoInARow(oldBoard, catMove.getBoard())==-1){
+			score-= 5;
+		}
+		if(isTwoInARow(oldBoard, catMove.getBoard())==1){
+			score+= 5;
+		}*/
+		if(findCatDistances(oldBoard, catMove)==1){
+			score+= 5;
+		}
+		if(findCatDistances(oldBoard, catMove)==-1){
+			score-= 5;
+		}
+		return score;
+	}
 	
 
 }
