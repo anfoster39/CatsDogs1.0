@@ -13,7 +13,7 @@ import catsdogs.sim.PossibleMove;
 
 public class G2RecursivePlayer extends catsdogs.sim.CatPlayer {
 	private Logger logger = Logger.getLogger(this.getClass()); // for logging
-	private final int recursiveLimit = 5;
+	private final int recursiveLimit = 12;
 
 	public String getName() {
 		return "G2CatRecursivePlayer";
@@ -44,7 +44,7 @@ public class G2RecursivePlayer extends catsdogs.sim.CatPlayer {
 		moves = Cat.allLegalMoves(currentBoard);
 		
 		for(PossibleMove option: moves){
-			int score = miniMax(option, (round+1));
+			int score = miniMax(option, (round+1), currentBoard);
 			if (score < bestscore){
 					bestscore = score; 
 					bestmove = option;
@@ -55,9 +55,9 @@ public class G2RecursivePlayer extends catsdogs.sim.CatPlayer {
 	}
 	
 	
-	private int miniMax(PossibleMove move, int round){
+	private int miniMax(PossibleMove move, int round, int[][] previousBoard){
 		if(round >= recursiveLimit){
-			return score(move);
+			return score(previousBoard, move);
 		}
 
 		int bestscore;
@@ -83,7 +83,7 @@ public class G2RecursivePlayer extends catsdogs.sim.CatPlayer {
 				score = 100;
 			}
 			else{
-				score = miniMax(option, ++round);
+				score = miniMax(option, ++round, move.getBoard());
 			}
 			if(round % 3 > 0){//in this case this is a dog move (maximize score)
 				if (score > bestscore){
@@ -105,11 +105,7 @@ public class G2RecursivePlayer extends catsdogs.sim.CatPlayer {
 	 * @param move
 	 * @return
 	 */
-	private int score(PossibleMove move) {
-		int score;
-		score = Cat.allLegalMoves(move.getBoard()).size();
-		return score;
-	}
+	
 
 	
 	
@@ -124,12 +120,12 @@ public class G2RecursivePlayer extends catsdogs.sim.CatPlayer {
 	private int score(int [][] oldBoard, PossibleMove catMove) {
 		int score =Cat.allLegalMoves(catMove.getBoard()).size();
 
-		/*if(isTwoInARow(oldBoard, catMove.getBoard())==-1){
+		if(isTwoInARow(oldBoard, catMove.getBoard())==-1){
 			score-= 5;
 		}
 		if(isTwoInARow(oldBoard, catMove.getBoard())==1){
 			score+= 5;
-		}*/
+		}
 //		if(findCatDistances(oldBoard, catMove)==1){
 //			score+= 5;
 //		}
