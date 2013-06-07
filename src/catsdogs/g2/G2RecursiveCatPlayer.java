@@ -13,7 +13,7 @@ import catsdogs.sim.PossibleMove;
 
 public class G2RecursiveCatPlayer extends catsdogs.sim.CatPlayer {
 	private Logger logger = Logger.getLogger(this.getClass()); // for logging
-	private final int recursiveLimit = 12;
+	private final int recursiveLimit = 0;
 
 	public String getName() {
 		return "G2CatRecursivePlayer";
@@ -83,7 +83,7 @@ public class G2RecursiveCatPlayer extends catsdogs.sim.CatPlayer {
 				score = 100;
 			}
 			else{
-				score = miniMax(option, ++round, move.getBoard());
+				score = miniMax(option, (round+1), move.getBoard());
 			}
 			if(round % 3 > 0){//in this case this is a dog move (maximize score)
 				if (score > bestscore){
@@ -120,12 +120,12 @@ public class G2RecursiveCatPlayer extends catsdogs.sim.CatPlayer {
 	private int score(int [][] oldBoard, PossibleMove catMove) {
 		int score =Cat.allLegalMoves(catMove.getBoard()).size();
 
-		if(isTwoInARow(oldBoard, catMove.getBoard())==-1){
+		/*if(isTwoInARow(oldBoard, catMove.getBoard())==-1){
 			score-= 5;
 		}
 		if(isTwoInARow(oldBoard, catMove.getBoard())==1){
 			score+= 5;
-		}
+		}*/
 //		if(findCatDistances(oldBoard, catMove)==1){
 //			score+= 5;
 //		}

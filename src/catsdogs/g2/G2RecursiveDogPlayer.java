@@ -13,7 +13,8 @@ import catsdogs.sim.PossibleMove;
 
 public class G2RecursiveDogPlayer extends catsdogs.sim.DogPlayer {
 	private Logger logger = Logger.getLogger(this.getClass()); // for logging
-	private final int recursiveLimit = 9;
+	private int recursiveLimit = 0;
+	private int recursiveLimitOrig = 0;
 
 	public String getName() {
 		return "G2RecursiveDogPlayer";
@@ -21,17 +22,19 @@ public class G2RecursiveDogPlayer extends catsdogs.sim.DogPlayer {
 
 	public void startNewGame() {
 		logger.info("G2 player starting new game!");
-
 	}
 	
 	@Override
 	public Move doMove1(int[][] board) {
+		recursiveLimit = recursiveLimit + 1;
 		// TODO Auto-generated method stub
 		return getBestCatMove(board, 1);
 	}
 
 	@Override
 	public Move doMove2(int[][] board) {
+		recursiveLimit = recursiveLimit + 2;
+
 		// TODO Auto-generated method stub
 		return getBestCatMove(board, 2);
 	}
@@ -57,7 +60,7 @@ public class G2RecursiveDogPlayer extends catsdogs.sim.DogPlayer {
 					bestmove = option;
 				}
 		}
-			
+	   recursiveLimit= recursiveLimitOrig;
 	   return bestmove;
 	}
 	
@@ -90,7 +93,7 @@ public class G2RecursiveDogPlayer extends catsdogs.sim.DogPlayer {
 				score = 100;
 			}
 			else{
-				score = miniMax(option, ++round, move.getBoard());
+				score = miniMax(option, (round+1), move.getBoard());
 			}
 			if(round % 3 > 0){//in this case this is a dog move (maximize score)
 				if (score > bestscore){
@@ -125,14 +128,14 @@ public class G2RecursiveDogPlayer extends catsdogs.sim.DogPlayer {
 	 * @return the score 
 	 */
 	private int score(int [][] oldBoard, PossibleMove catMove) {
-		int score =Cat.allLegalMoves(catMove.getBoard()).size();
+		int score = Cat.allLegalMoves(catMove.getBoard()).size();
 
-		if(isTwoInARow(oldBoard, catMove.getBoard())==-1){
+		/*if(isTwoInARow(oldBoard, catMove.getBoard())==-1){
 			score-= 5;
 		}
 		if(isTwoInARow(oldBoard, catMove.getBoard())==1){
 			score+= 5;
-		}
+		}*/
 //		if(findCatDistances(oldBoard, catMove)==1){
 //			score+= 5;
 //		}
