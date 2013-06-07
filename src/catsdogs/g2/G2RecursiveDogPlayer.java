@@ -13,10 +13,10 @@ import catsdogs.sim.PossibleMove;
 
 public class G2RecursiveDogPlayer extends catsdogs.sim.DogPlayer {
 	private Logger logger = Logger.getLogger(this.getClass()); // for logging
-	private final int recursiveLimit = 12;
+	private final int recursiveLimit = 9;
 
 	public String getName() {
-		return "G2CatRecursivePlayer";
+		return "G2RecursiveDogPlayer";
 	}
 
 	public void startNewGame() {
@@ -52,12 +52,12 @@ public class G2RecursiveDogPlayer extends catsdogs.sim.DogPlayer {
 		
 		for(PossibleMove option: moves){
 			int score = miniMax(option, (round+1), currentBoard);
-			if (score < bestscore){
+			if (score > bestscore){
 					bestscore = score; 
 					bestmove = option;
 				}
 		}
-				
+			
 	   return bestmove;
 	}
 	

@@ -6,7 +6,7 @@
 	
 <entry key="catsdogs.cat">catsdogs.g2.G2RecursivePlayer catsdogs.g2.G2CatOrthAvoidPlayer catsdogs.g0.RandomCatPlayer catsdogs.g2.G2CatQuadPlayer</entry>
 
-<entry key="catsdogs.dog">catsdogs.g0.RandomDogPlayer</entry>
+<entry key="catsdogs.dog">catsdogs.g2.G2RecursiveDogPlayer catsdogs.g0.RandomDogPlayer</entry>
 	
 
 	
