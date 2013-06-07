@@ -14,7 +14,7 @@ import catsdogs.sim.PossibleMove;
 
 public class G2CatOrthAvoidPlayer extends catsdogs.sim.CatPlayer {
 	private Logger logger = Logger.getLogger(this.getClass()); // for logging
-	private final int recursiveLimit = 2;
+	private final int recursiveLimit = 3;
 
 	public String getName() {
 		return "G2CatOrthAvoidPlayer";
@@ -52,10 +52,14 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.CatPlayer {
 		int size = moves.size();
 		//throws away any suicide moves
 		ArrayList<PossibleMove> moves2keep = new ArrayList<PossibleMove>();
-		for(int i = 0 ; i< size; i++){
-			if(!Dog.wins(moves.get(i).getBoard())){
-				moves2keep.add(moves.get(i));
+		if(round % 3 < 1){
+			for(int i = 0 ; i< size; i++){
+				if(!Dog.wins(moves.get(i).getBoard())){
+					moves2keep.add(moves.get(i));
+				}
 			}
+		}else{
+			moves2keep = moves;
 		}
 		//if there are no ok moves, return a random move
 		if(moves2keep.size() == 0){
@@ -110,7 +114,7 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.CatPlayer {
 			if(round-1 % 3 > 0){//in this case this is a dog move
 				 bestScore = -10000;
 				for (PossibleMove moveN: nextMoves){
-					int score = getFutureScore(moveN, round1);
+					int score = score(move.getBoard(), moveN);
 					if (score > bestScore ){
 						bestScore = score;
 					}
@@ -119,7 +123,7 @@ public class G2CatOrthAvoidPlayer extends catsdogs.sim.CatPlayer {
 				else{//in this case this is a cat move
 					 bestScore = 10000;
 					for (PossibleMove moveN: nextMoves){
-						int score = getFutureScore(moveN, round1);
+						int score = score(move.getBoard(), moveN);
 						if (score < bestScore ){
 							bestScore = score;
 						}
