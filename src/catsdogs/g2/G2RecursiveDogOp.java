@@ -2,6 +2,7 @@ package catsdogs.g2;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.apache.log4j.Logger;
 
@@ -11,23 +12,33 @@ import catsdogs.sim.Dog;
 import catsdogs.sim.Move;
 import catsdogs.sim.PossibleMove;
 
-public class G2RecursiveCatPlayer extends catsdogs.sim.CatPlayer {
+public class G2RecursiveDogOp extends catsdogs.sim.DogPlayer {
 	private Logger logger = Logger.getLogger(this.getClass()); // for logging
-	private final int recursiveLimit = 3;
-
+	private int recursiveLimit = 4;
+	private int recursiveLimitOrig = 4;
+	private HashMap<Integer,Integer> roundLims = new HashMap<Integer,Integer> ();
 	public String getName() {
-		return "G2CatRecursivePlayer";
+		return "G2RecursiveDogOp";
 	}
 
 	public void startNewGame() {
 		logger.info("G2 player starting new game!");
-
-	}
-	public Move doMove(int[][] board) {
-		return getBestCatMove(board, 0);
-		
 	}
 	
+	@Override
+	public Move doMove1(int[][] board) {
+		recursiveLimit = recursiveLimit + 1;
+		// TODO Auto-generated method stub
+		return getBestCatMove(board, 1);
+	}
+
+	@Override
+	public Move doMove2(int[][] board) {
+		recursiveLimit = recursiveLimit + 2;
+
+		// TODO Auto-generated method stub
+		return getBestCatMove(board, 2);
+	}
 	
 	/**
 	 * Takes the current board and finds the best cat move based on our scoring
@@ -36,12 +47,12 @@ public class G2RecursiveCatPlayer extends catsdogs.sim.CatPlayer {
 	 */
 	public PossibleMove getBestCatMove(int[][] currentBoard, int round){
 		//looks at each option
-		
-		int bestscore = 10000;
+		roundLims.put(round, -10000);
+		int bestscore = -10000;
 		PossibleMove bestmove = null;
 		
 		ArrayList<PossibleMove> moves;
-		moves = Cat.allLegalMoves(currentBoard);
+		moves = Dog.allLegalMoves(currentBoard);
 		
 		for(PossibleMove option: moves){
 			int score;
@@ -50,16 +61,20 @@ public class G2RecursiveCatPlayer extends catsdogs.sim.CatPlayer {
 			}
 			else if(Dog.wins(option.getBoard())){
 				score = 1000;
+				return option;
 			}
 			else{
 				score = miniMax(option, (round+1), currentBoard);
 			}
-			if (score < bestscore){
+			if (score > bestscore){
 					bestscore = score; 
 					bestmove = option;
 				}
+			if(score>roundLims.get(round)){
+				roundLims.put(round, score);
+			}
 		}
-				
+	   recursiveLimit= recursiveLimitOrig;
 	   return bestmove;
 	}
 	
@@ -68,12 +83,19 @@ public class G2RecursiveCatPlayer extends catsdogs.sim.CatPlayer {
 		if(round >= recursiveLimit){
 			return score(previousBoard, move);
 		}
+		
 
 		int bestscore;
 		if(round % 3 > 0){//in this case this is a dog move (maximize score)
-			bestscore = -10000;
+			bestscore = -100000;
+			if(!roundLims.containsKey(round)){
+				roundLims.put(round, -100000);
+			}
 		}else{ // is cat move and minimizes score
-			bestscore = 10000;
+			bestscore = 100000;
+			if(!roundLims.containsKey(round)){
+				roundLims.put(round, 100000);
+			}
 		}
 	  
 	   ArrayList<PossibleMove> moves;
@@ -87,9 +109,19 @@ public class G2RecursiveCatPlayer extends catsdogs.sim.CatPlayer {
 			int score;
 			if(Cat.wins(option.getBoard())){
 				score = -1000;
+				if(round % 3 < 1){
+					
+					return -1000;
+				}
+
 			}
 			else if(Dog.wins(option.getBoard())){
 				score = 1000;
+				if(round % 3 > 0){
+
+					return 1000;
+				
+				}
 			}
 			else{
 				score = miniMax(option, (round+1), move.getBoard());
@@ -98,12 +130,22 @@ public class G2RecursiveCatPlayer extends catsdogs.sim.CatPlayer {
 				if (score > bestscore){
 					bestscore = score; 
 				}
+				/*if(score>gloMin){
+					return score;
+				}*/
 			}
 			else{ // is cat move and minimizes score
 				if (score < bestscore){
 					bestscore = score; 
 				}
+				if(score<roundLims.get(round)){
+					return score;
+				}
+				if(score>roundLims.get(round)){
+					roundLims.put(round, score);
+				}
 			}
+			
 		}
 				
 	   return bestscore;
@@ -192,7 +234,6 @@ public class G2RecursiveCatPlayer extends catsdogs.sim.CatPlayer {
 		int doubleRowCt = 0;
 		for(int i = 0; i < 7; i++){
 			int catCt = 0;
-			
 			for(int j = 0; j < 7; j++){
 				if(board[i][j]==Board.CAT ){
 					catCt++;
@@ -216,20 +257,30 @@ public class G2RecursiveCatPlayer extends catsdogs.sim.CatPlayer {
 		return doubleRowCt;
 	}
 	private int score(int [][] oldBoard, PossibleMove catMove) {
-		int score = Cat.allLegalMoves(catMove.getBoard()).size()*10;
+		int score =  0;//-Cat.allLegalMoves(catMove.getBoard()).size()*10;//5,95
+		//int score =  Dog.allLegalMoves(catMove.getBoard()).size()*10;//12,88
 
-		/*if(isTwoInARow(oldBoard, catMove.getBoard())==-1){
-			score-= 5;
+		if(Cat.wins(catMove.getBoard())){
+			score = -1000;
+		}
+		else if(Dog.wins(catMove.getBoard())){
+			score = 1000;
+		}
+		/*if(isTwoInARow(oldBoard, catMove.getBoard())==-1){//same signs makes 15 / 85, reversed signs keeps 5/95
+			score+= 15;
 		}
 		if(isTwoInARow(oldBoard, catMove.getBoard())==1){
-			score+= 5;
+			score-= 15;
 		}*/
 		/*if(findCatDistances(oldBoard, catMove)==1){
-			score+= 5;
+			score-= 5;
 		}
 		if(findCatDistances(oldBoard, catMove)==-1){
-			score-= 5;
+			score+= 5;
 		}*/
+		//rec lev 3 -- combination of two at 15 and dist at 5 is 96/4 while just two at 15 is 91/9 and just dist is 9/91
 		return score;
 	}
+	
+
 }

@@ -4,9 +4,9 @@
 <properties>
 	<comment>A sample configuration file.</comment>
 	
-<entry key="catsdogs.cat">catsdogs.g2.G2RecursiveCatPlayer catsdogs.g2.G2CatOrthAvoidPlayer catsdogs.g0.RandomCatPlayer</entry>
+<entry key="catsdogs.cat">catsdogs.g2.G2RecursiveCatPlayer catsdogs.g2.G2RecursiveCatOp catsdogs.g2.G2CatOrthAvoidPlayer catsdogs.g0.RandomCatPlayer</entry>
 
-<entry key="catsdogs.dog">catsdogs.g2.G2RecursiveDogPlayer catsdogs.g0.RandomDogPlayer</entry>
+<entry key="catsdogs.dog">catsdogs.g2.G2RecursiveDogPlayer catsdogs.g2.G2RecursiveDogOp catsdogs.g0.RandomDogPlayer</entry>
 	
 
 	
