@@ -11,11 +11,16 @@ import catsdogs.sim.Dog;
 import catsdogs.sim.Move;
 import catsdogs.sim.PossibleMove;
 
+
+
 public class G2RecursiveDogPlayer extends catsdogs.sim.DogPlayer {
 	private Logger logger = Logger.getLogger(this.getClass()); // for logging
-	private int recursiveLimit = 3;
-	private int recursiveLimitOrig = 3;
+	private int recursiveLimit = 5;
+	private int recursiveLimitOrig = 5;
+	private final long timeLimit=2000;
 
+	private long start;
+	
 	public String getName() {
 		return "G2RecursiveDogPlayer";
 	}
@@ -26,6 +31,8 @@ public class G2RecursiveDogPlayer extends catsdogs.sim.DogPlayer {
 	
 	@Override
 	public Move doMove1(int[][] board) {
+		 start = System.currentTimeMillis();
+
 		recursiveLimit = recursiveLimit + 1;
 		// TODO Auto-generated method stub
 		return getBestMove(board, 1);
@@ -33,6 +40,8 @@ public class G2RecursiveDogPlayer extends catsdogs.sim.DogPlayer {
 
 	@Override
 	public Move doMove2(int[][] board) {
+		 start = System.currentTimeMillis();
+
 		recursiveLimit = recursiveLimit + 2;
 
 		// TODO Auto-generated method stub
@@ -75,8 +84,10 @@ public class G2RecursiveDogPlayer extends catsdogs.sim.DogPlayer {
 	}
 	
 	
+
 	private int miniMax(PossibleMove move, int round, int alpha, int beta, int[][] previousBoard){
-		if(round >= recursiveLimit){ //base case
+		long now = System.currentTimeMillis();
+		if(start+ timeLimit <= now){ //base case
 			return score(previousBoard, move);
 		}
 		
@@ -84,6 +95,7 @@ public class G2RecursiveDogPlayer extends catsdogs.sim.DogPlayer {
 		
 		if(round % 3 > 0){//if Dog turn
 			moves = Dog.allLegalMoves(move.getBoard()); // get dog's moves
+			logger.info(moves.size());
 			for(PossibleMove option: moves){
 				int score;
 				if(Cat.wins(option.getBoard())){
@@ -272,7 +284,7 @@ public class G2RecursiveDogPlayer extends catsdogs.sim.DogPlayer {
 		return doubleRowCt;
 	}
 	private int score(int [][] oldBoard, PossibleMove catMove) {
-		int score = 0; //Cat.allLegalMoves(catMove.getBoard()).size()*10;
+		int score =0;// -Cat.allLegalMoves(catMove.getBoard()).size()*10;
 		if(Cat.wins(catMove.getBoard())){
 			score = -1000;
 		}
@@ -285,12 +297,12 @@ public class G2RecursiveDogPlayer extends catsdogs.sim.DogPlayer {
 //		if(isTwoInARow(oldBoard, catMove.getBoard())==1){
 //			score+= 5;
 //		}
-		if(findDogDistances(oldBoard, catMove)==1){
+		/*if(findDogDistances(oldBoard, catMove)==1){
 			score+= 5;
 		}
 		if(findDogDistances(oldBoard, catMove)==-1){
 			score-= 5;
-		}
+		}*/
 		return score;
 	}
 	
