@@ -29,8 +29,8 @@ public class G2CatTime extends catsdogs.sim.CatPlayer {
 	public Move doMove(int[][] board) {
 		start = System.nanoTime()/1000;
 		Move move = getBestMove(board, 0);
-		double time = (System.nanoTime()/1000 - start) / 1000000;
-		logger.error("time taken is: " + time);
+//		double time = (System.nanoTime()/1000 - start) / 1000000;
+//		logger.error("time taken is: " + time);
 		return move;
 		
 	}
@@ -50,17 +50,14 @@ public class G2CatTime extends catsdogs.sim.CatPlayer {
 		ArrayList<PossibleMove> moves;
 		moves = Cat.allLegalMoves(currentBoard);
 		int optionCt = 0;
-		int numberOfMoves = moves.size();
 		for(PossibleMove option: moves){
 			int score;
 			if(Cat.wins(option.getBoard())){
 				score = -1000;
-				numberOfMoves--;
 				return option;
 			}
 			else if(Dog.wins(option.getBoard())){
 				score = 1000;
-				numberOfMoves--;
 			}
 			else{
 				score = miniMax(option, 0, ((timeLimit/moves.size())*(optionCt+1)), -1000, 1000, currentBoard);

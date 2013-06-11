@@ -15,8 +15,8 @@ import catsdogs.sim.PossibleMove;
 
 public class G2RecursiveDogPlayer extends catsdogs.sim.DogPlayer {
 	private Logger logger = Logger.getLogger(this.getClass()); // for logging
-	private int recursiveLimit = 0;
-	private int recursiveLimitOrig =0;
+	private int recursiveLimit = 4;
+	private int recursiveLimitOrig =4;
 	
 	public String getName() {
 		return "G2RecursiveDogPlayer";

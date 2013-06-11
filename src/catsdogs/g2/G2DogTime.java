@@ -15,14 +15,14 @@ import catsdogs.sim.PossibleMove;
 
 public class G2DogTime extends catsdogs.sim.DogPlayer {
 	private Logger logger = Logger.getLogger(this.getClass()); // for logging
-	private int recursiveLimit = 5;
-	private int recursiveLimitOrig = 5;
-	private final long timeLimit=2000;
+//	private int recursiveLimit = 5;
+//	private int recursiveLimitOrig = 5;
+	private final double timeLimit=5000000;
 
 	private long start;
 	
 	public String getName() {
-		return "G2RecursiveDogPlayer";
+		return "G2TimeDogPlayer";
 	}
 
 	public void startNewGame() {
@@ -31,21 +31,22 @@ public class G2DogTime extends catsdogs.sim.DogPlayer {
 	
 	@Override
 	public Move doMove1(int[][] board) {
-		 start = System.currentTimeMillis();
-
-		recursiveLimit = recursiveLimit + 1;
-		// TODO Auto-generated method stub
-		return getBestMove(board, 1);
+		start = System.nanoTime()/1000;
+		Move move = getBestMove(board, 0);
+//		double time = (System.nanoTime()/1000 - start) / 1000000;
+//		logger.error("time taken is: " + time);
+//		recursiveLimit = recursiveLimit + 1;
+		return move;
 	}
 
 	@Override
 	public Move doMove2(int[][] board) {
-		 start = System.currentTimeMillis();
-
-		recursiveLimit = recursiveLimit + 2;
-
-		// TODO Auto-generated method stub
-		return getBestMove(board, 2);
+		start = System.nanoTime()/1000;
+		Move move = getBestMove(board, 0);
+		double time = (System.nanoTime()/1000 - start) / 1000000;
+		logger.error("time taken is: " + time);
+//		recursiveLimit = recursiveLimit + 2;
+		return move;
 	}
 	
 	/**
@@ -62,6 +63,8 @@ public class G2DogTime extends catsdogs.sim.DogPlayer {
 		ArrayList<PossibleMove> moves;
 		moves = Dog.allLegalMoves(currentBoard);
 		
+		int optionCt = 0;
+		
 		for(PossibleMove option: moves){
 			int score;
 			if(Cat.wins(option.getBoard())){
@@ -72,22 +75,22 @@ public class G2DogTime extends catsdogs.sim.DogPlayer {
 				return option;
 			}
 			else{
-				score = miniMax(option, (round+1), -1000, 1000, currentBoard);
+				score = miniMax(option, 0, ((timeLimit/moves.size())*(optionCt+1)), -1000, 1000, currentBoard);
 			}
 			if (score > bestscore){
 					bestscore = score; 
 					bestmove = option;
 				}
 		}
-	   recursiveLimit= recursiveLimitOrig;
+//	   recursiveLimit= recursiveLimitOrig;
 	   return bestmove;
 	}
 	
 	
 
-	private int miniMax(PossibleMove move, int round, int alpha, int beta, int[][] previousBoard){
-		long now = System.currentTimeMillis();
-		if(start+ timeLimit <= now){ //base case
+	private int miniMax(PossibleMove move, int round , double recursiveTimeLimit, int alpha, int beta, int[][] previousBoard){
+		if(start + recursiveTimeLimit < System.nanoTime()/1000){ //base case
+			logger.error("Limit " + recursiveTimeLimit + " Time from start: " + ((System.nanoTime()/1000)-start)+ " stopped at recursive level " + round);
 			return score(previousBoard, move);
 		}
 		
@@ -96,6 +99,7 @@ public class G2DogTime extends catsdogs.sim.DogPlayer {
 		if(round % 3 > 0){//if Dog turn
 			moves = Dog.allLegalMoves(move.getBoard()); // get dog's moves
 			logger.info(moves.size());
+			int optionCt = 0;
 			for(PossibleMove option: moves){
 				int score;
 				if(Cat.wins(option.getBoard())){
@@ -105,7 +109,8 @@ public class G2DogTime extends catsdogs.sim.DogPlayer {
 					score = 1000;
 				}
 				else{
-					score = miniMax(option, (round+1), alpha, beta, move.getBoard());
+					score = miniMax(option, (round + 1), (recursiveTimeLimit/moves.size())*(optionCt+1), alpha, beta, move.getBoard());
+					optionCt++;
 				}
 				
 				if (alpha < score){
@@ -120,16 +125,18 @@ public class G2DogTime extends catsdogs.sim.DogPlayer {
 			}
 			else{//Cat turn
 				moves = Cat.allLegalMoves(move.getBoard()); // get cat's moves
+				int optionCt = 0;
 				for(PossibleMove option: moves){
 					int score;
 					if(Cat.wins(option.getBoard())){
 						score = -1000;
 					}
-					else if(Dog.wins(option.getBoard())){
+					else if(Dog.wins(option.getBoard())){ //if dog wins stop here
 						score = 1000;
 					}
 					else{
-						score = miniMax(option, (round+1), alpha, beta, move.getBoard());
+						score = miniMax(option, (round + 1), (recursiveTimeLimit/moves.size())*(optionCt+1), alpha, beta, move.getBoard());
+						optionCt++;
 					}
 					
 					if (beta > score){
