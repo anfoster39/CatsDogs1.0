@@ -13,7 +13,7 @@ import catsdogs.sim.PossibleMove;
 
 public class G2RecursiveCatPlayer extends catsdogs.sim.CatPlayer {
 	private Logger logger = Logger.getLogger(this.getClass()); // for logging
-	private final int recursiveLimit = 3;
+	private final int recursiveLimit = 5;
 
 	public String getName() {
 		return "G2CatRecursivePlayer";
@@ -53,7 +53,7 @@ public class G2RecursiveCatPlayer extends catsdogs.sim.CatPlayer {
 				score = 1000;
 			}
 			else{
-				score = miniMax(option, (round+1), currentBoard);
+				score = miniMax(option, (round+1), -1000, 1000, currentBoard);
 			}
 			if (score < bestscore){
 					bestscore = score; 
@@ -65,76 +65,63 @@ public class G2RecursiveCatPlayer extends catsdogs.sim.CatPlayer {
 	}
 	
 	
-	private int miniMax(PossibleMove move, int round, int[][] previousBoard){
+	private int miniMax(PossibleMove move, int round, int alpha, int beta, int[][] previousBoard){
 		if(round >= recursiveLimit){
 			return score(previousBoard, move);
 		}
-
-		int bestscore;
-		if(round % 3 > 0){//in this case this is a dog move (maximize score)
-			bestscore = -10000;
-		}else{ // is cat move and minimizes score
-			bestscore = 10000;
-		}
-	  
-	   ArrayList<PossibleMove> moves;
-		if(round % 3 > 0){//in this case this is a dog move
-			moves = Dog.allLegalMoves(move.getBoard());
-		}else{//in this case this is a cat move
-			moves = Cat.allLegalMoves(move.getBoard());
-		}
 		
-		for(PossibleMove option: moves){
-			int score;
-			if(Cat.wins(option.getBoard())){
-				score = -1000;
-				if(round % 3 < 1){
-					return score;
-					
+		ArrayList<PossibleMove> moves;
+		
+		if(round % 3 > 0){//if Dog turn
+			moves = Dog.allLegalMoves(move.getBoard()); // get dog's moves
+			for(PossibleMove option: moves){
+				int score;
+//				if(Cat.wins(option.getBoard())){
+//					score = -1000;
+//				}
+//				else if(Dog.wins(option.getBoard())){ //if dog wins stop here
+//					score = 1000;
+//						return score;
+//				}
+//				else{
+					score = miniMax(option, (round+1), alpha, beta, move.getBoard());
+					if (alpha < score){
+						alpha = score;
+					}
+		            if (beta <= alpha){
+		            	break;
+		           }
+				                
+//				}
+			}
+				return alpha;
+			}
+			else{//Cat turn
+				moves = Cat.allLegalMoves(move.getBoard()); // get cat's moves
+				for(PossibleMove option: moves){
+					int score;
+//					if(Cat.wins(option.getBoard())){
+//						score = -1000;
+//							return score;
+//					}
+//					else if(Dog.wins(option.getBoard())){
+//						score = 1000;
+//						if(round % 3 > 0){
+//						}
+//					}
+//					else{
+						score = miniMax(option, (round+1), alpha, beta, move.getBoard());
+						if (beta > score){
+							beta = score;
+						}
+			            if (beta <= alpha){
+			            	break;
+			            }
+					}
+					  return beta;
 				}
-			}
-			else if(Dog.wins(option.getBoard())){
-				score = 1000;
-				if(round % 3 > 0){
-					return score;
-					
-				}
-			}
-			else{
-				score = miniMax(option, (round+1), move.getBoard());
-			}
-			if(round % 3 > 0){//in this case this is a dog move (maximize score)
-				if (score > bestscore){
-					bestscore = score; 
-				}
-			}
-			else{ // is cat move and minimizes score
-				if (score < bestscore){
-					bestscore = score; 
-				}
-			}
-		}
-				
-	   return bestscore;
+
 	}
-	
-	
-	/**
-	 * @param move
-	 * @return
-	 */
-	
-
-	
-	
-	
-
-	
-	/**
-	 * Scores a single board for the cat
-	 * @param catMove
-	 * @return the score 
-	 */
 	
 	
 	private int findCatDistances(int [][] oldBoard, PossibleMove move){
