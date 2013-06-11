@@ -13,7 +13,7 @@ import catsdogs.sim.PossibleMove;
 
 public class G2RecursiveCatPlayer extends catsdogs.sim.CatPlayer {
 	private Logger logger = Logger.getLogger(this.getClass()); // for logging
-	private final int recursiveLimit = 5;
+	private final int recursiveLimit = 6;
 
 	public String getName() {
 		return "G2CatRecursivePlayer";
@@ -66,7 +66,7 @@ public class G2RecursiveCatPlayer extends catsdogs.sim.CatPlayer {
 	
 	
 	private int miniMax(PossibleMove move, int round, int alpha, int beta, int[][] previousBoard){
-		if(round >= recursiveLimit){
+		if(round >= recursiveLimit){ //base case
 			return score(previousBoard, move);
 		}
 		
@@ -76,23 +76,23 @@ public class G2RecursiveCatPlayer extends catsdogs.sim.CatPlayer {
 			moves = Dog.allLegalMoves(move.getBoard()); // get dog's moves
 			for(PossibleMove option: moves){
 				int score;
-//				if(Cat.wins(option.getBoard())){
-//					score = -1000;
-//				}
-//				else if(Dog.wins(option.getBoard())){ //if dog wins stop here
-//					score = 1000;
-//						return score;
-//				}
-//				else{
+				if(Cat.wins(option.getBoard())){
+					score = -1000;
+				}
+				else if(Dog.wins(option.getBoard())){ //if dog wins stop here
+					score = 1000;
+				}
+				else{
 					score = miniMax(option, (round+1), alpha, beta, move.getBoard());
-					if (alpha < score){
-						alpha = score;
-					}
-		            if (beta <= alpha){
-		            	break;
-		           }
-				                
-//				}
+				}
+				
+				if (alpha < score){
+					alpha = score;
+				}
+	            if (beta <= alpha){
+	            	break;
+	           }
+	            
 			}
 				return alpha;
 			}
@@ -100,23 +100,22 @@ public class G2RecursiveCatPlayer extends catsdogs.sim.CatPlayer {
 				moves = Cat.allLegalMoves(move.getBoard()); // get cat's moves
 				for(PossibleMove option: moves){
 					int score;
-//					if(Cat.wins(option.getBoard())){
-//						score = -1000;
-//							return score;
-//					}
-//					else if(Dog.wins(option.getBoard())){
-//						score = 1000;
-//						if(round % 3 > 0){
-//						}
-//					}
-//					else{
+					if(Cat.wins(option.getBoard())){
+						score = -1000;
+					}
+					else if(Dog.wins(option.getBoard())){
+						score = 1000;
+					}
+					else{
 						score = miniMax(option, (round+1), alpha, beta, move.getBoard());
-						if (beta > score){
-							beta = score;
-						}
-			            if (beta <= alpha){
-			            	break;
-			            }
+					}
+					
+					if (beta > score){
+						beta = score;
+					}
+		            if (beta <= alpha){
+		            	break;
+		            }
 					}
 					  return beta;
 				}
