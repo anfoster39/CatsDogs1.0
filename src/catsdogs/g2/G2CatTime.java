@@ -80,7 +80,7 @@ public class G2CatTime extends catsdogs.sim.CatPlayer {
 	
 	private int miniMax(PossibleMove move, int round , double recursiveTimeLimit, int alpha, int beta, int[][] previousBoard){
 		if(start + recursiveTimeLimit < System.currentTimeMillis()){ //base case
-			logger.error("stopped at recursive level " + round);
+			logger.error("Limit " + recursiveTimeLimit + "Time now: " + System.currentTimeMillis()+ "stopped at recursive level " + round);
 			return score(previousBoard, move);
 		}
 		
