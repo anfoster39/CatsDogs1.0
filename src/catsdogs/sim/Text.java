@@ -92,11 +92,11 @@ public final class Text
 		
 				// game's over... now what?
 				if (Cat.wins(engine.getBoard().objects)) {
-					System.out.println("Cat wins!");
+					System.out.println("Round " + (catWins + dogWins) + ": " + "Cat wins!");
 					catWins++;
 				}
 				else { 
-					System.out.println("Dog wins!");
+					System.out.println("Round " + (catWins + dogWins) + ": " + "Dog wins!");
 					dogWins++;
 				}
 				
