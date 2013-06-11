@@ -2,6 +2,7 @@ package catsdogs.g2;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import org.apache.log4j.Logger;
 
@@ -29,9 +30,9 @@ public class G2CatTime extends catsdogs.sim.CatPlayer {
 
 	}
 	public Move doMove(int[][] board) {
-		 start = System.currentTimeMillis();
+		 start = System.nanoTime()/100;
 		Move move = getBestMove(board, 0);
-		double time = (System.currentTimeMillis() - start) / 1000;
+		double time = (System.nanoTime()/100 - start) / 1000;
 		logger.error("time taken is: " + time);
 		return move;
 		
@@ -51,6 +52,7 @@ public class G2CatTime extends catsdogs.sim.CatPlayer {
 		
 		ArrayList<PossibleMove> moves;
 		moves = Cat.allLegalMoves(currentBoard);
+		Collections.shuffle(moves);
 		int optionCt = 0;
 		int numberOfMoves = moves.size();
 		for(PossibleMove option: moves){
@@ -79,8 +81,8 @@ public class G2CatTime extends catsdogs.sim.CatPlayer {
 	
 	
 	private int miniMax(PossibleMove move, int round , double recursiveTimeLimit, int alpha, int beta, int[][] previousBoard){
-		if(start + recursiveTimeLimit < System.currentTimeMillis()){ //base case
-			logger.error("Limit " + recursiveTimeLimit + "Time now: " + System.currentTimeMillis()+ "stopped at recursive level " + round);
+		if(start + recursiveTimeLimit*10 < System.nanoTime()/100){ //base case
+			logger.error("Limit " + recursiveTimeLimit + "Time now: " + System.nanoTime()/100+ "stopped at recursive level " + round);
 			return score(previousBoard, move);
 		}
 		
