@@ -14,7 +14,7 @@ import catsdogs.sim.PossibleMove;
 public class G2CatTime extends catsdogs.sim.CatPlayer {
 	private Logger logger = Logger.getLogger(this.getClass()); // for logging
 	private final int recursiveLimit =6;
-	private final double timeLimit=4000000;
+	private final double timeLimit=5000;
 	private final double recursiveTimeLimit=0.05;
 
 	private int roundCt = 0;
@@ -29,9 +29,11 @@ public class G2CatTime extends catsdogs.sim.CatPlayer {
 
 	}
 	public Move doMove(int[][] board) {
-		 start = System.nanoTime();
-		
-		return getBestMove(board, 0);
+		 start = System.currentTimeMillis();
+		Move move = getBestMove(board, 0);
+		double time = (System.currentTimeMillis() - start) / 1000;
+		logger.error("time taken is: " + time);
+		return move;
 		
 	}
 	
@@ -63,7 +65,7 @@ public class G2CatTime extends catsdogs.sim.CatPlayer {
 				numberOfMoves--;
 			}
 			else{
-				score = miniMax(option, 0, (timeLimit/moves.size())*(optionCt+1), -1000, 1000, currentBoard);
+				score = miniMax(option, 0, ((timeLimit/moves.size())*(optionCt+1)), -1000, 1000, currentBoard);
 				optionCt++;
 			}
 			if (score < bestscore){
@@ -77,7 +79,8 @@ public class G2CatTime extends catsdogs.sim.CatPlayer {
 	
 	
 	private int miniMax(PossibleMove move, int round , double recursiveTimeLimit, int alpha, int beta, int[][] previousBoard){
-		if(start + recursiveTimeLimit < System.nanoTime()){ //base case
+		if(start + recursiveTimeLimit < System.currentTimeMillis()){ //base case
+			logger.error("stopped at recursive level " + round);
 			return score(previousBoard, move);
 		}
 		
