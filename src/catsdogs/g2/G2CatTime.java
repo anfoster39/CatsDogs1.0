@@ -15,8 +15,7 @@ import catsdogs.sim.PossibleMove;
 public class G2CatTime extends catsdogs.sim.CatPlayer {
 	private Logger logger = Logger.getLogger(this.getClass()); // for logging
 	private final int recursiveLimit =6;
-	private final double timeLimit=5000;
-	private final double recursiveTimeLimit=0.05;
+	private final double timeLimit=5000000;
 
 	private int roundCt = 0;
 	private double start; 
@@ -30,9 +29,9 @@ public class G2CatTime extends catsdogs.sim.CatPlayer {
 
 	}
 	public Move doMove(int[][] board) {
-		 start = System.nanoTime()/100;
+		 start = System.nanoTime()/1000;
 		Move move = getBestMove(board, 0);
-		double time = (System.nanoTime()/100 - start) / 1000;
+		double time = (System.nanoTime()/1000 - start) / 1000;
 		logger.error("time taken is: " + time);
 		return move;
 		
@@ -81,7 +80,7 @@ public class G2CatTime extends catsdogs.sim.CatPlayer {
 	
 	
 	private int miniMax(PossibleMove move, int round , double recursiveTimeLimit, int alpha, int beta, int[][] previousBoard){
-		if(start + recursiveTimeLimit*10 < System.nanoTime()/100){ //base case
+		if(start + recursiveTimeLimit < System.nanoTime()/1000){ //base case
 			logger.error("Limit " + recursiveTimeLimit + "Time now: " + System.nanoTime()/100+ "stopped at recursive level " + round);
 			return score(previousBoard, move);
 		}
@@ -101,7 +100,7 @@ public class G2CatTime extends catsdogs.sim.CatPlayer {
 					score = 1000;
 				}
 				else{
-					score = miniMax(option, (round + 1), (timeLimit/moves.size())*(optionCt+1), alpha, beta, move.getBoard());
+					score = miniMax(option, (round + 1), (recursiveTimeLimit/moves.size())*(optionCt+1), alpha, beta, move.getBoard());
 					optionCt++;
 				}
 				
@@ -127,7 +126,7 @@ public class G2CatTime extends catsdogs.sim.CatPlayer {
 						score = 1000;
 					}
 					else{
-						score = miniMax(option, (round + 1), (timeLimit/moves.size())*(optionCt+1), alpha, beta, move.getBoard());
+						score = miniMax(option, (round + 1), (recursiveTimeLimit/moves.size())*(optionCt+1), alpha, beta, move.getBoard());
 						optionCt++;
 					}
 					
