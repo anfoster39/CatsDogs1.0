@@ -11,23 +11,42 @@ import catsdogs.sim.Dog;
 import catsdogs.sim.Move;
 import catsdogs.sim.PossibleMove;
 
-public class G2RecursiveCatPlayer extends catsdogs.sim.CatPlayer {
-	private Logger logger = Logger.getLogger(this.getClass()); // for logging
-	private final int recursiveLimit =5;
 
+
+public class G2DogTime extends catsdogs.sim.DogPlayer {
+	private Logger logger = Logger.getLogger(this.getClass()); // for logging
+	private int recursiveLimit = 5;
+	private int recursiveLimitOrig = 5;
+	private final long timeLimit=2000;
+
+	private long start;
+	
 	public String getName() {
-		return "G2CatRecursivePlayer";
+		return "G2RecursiveDogPlayer";
 	}
 
 	public void startNewGame() {
 		logger.info("G2 player starting new game!");
-
-	}
-	public Move doMove(int[][] board) {
-		return getBestMove(board, 0);
-		
 	}
 	
+	@Override
+	public Move doMove1(int[][] board) {
+		 start = System.currentTimeMillis();
+
+		recursiveLimit = recursiveLimit + 1;
+		// TODO Auto-generated method stub
+		return getBestMove(board, 1);
+	}
+
+	@Override
+	public Move doMove2(int[][] board) {
+		 start = System.currentTimeMillis();
+
+		recursiveLimit = recursiveLimit + 2;
+
+		// TODO Auto-generated method stub
+		return getBestMove(board, 2);
+	}
 	
 	/**
 	 * Takes the current board and finds the best cat move based on our scoring
@@ -37,36 +56,38 @@ public class G2RecursiveCatPlayer extends catsdogs.sim.CatPlayer {
 	public PossibleMove getBestMove(int[][] currentBoard, int round){
 		//looks at each option
 		
-		int bestscore = 10000;
+		int bestscore = -10000;
 		PossibleMove bestmove = null;
 		
 		ArrayList<PossibleMove> moves;
-		moves = Cat.allLegalMoves(currentBoard);
+		moves = Dog.allLegalMoves(currentBoard);
 		
 		for(PossibleMove option: moves){
 			int score;
 			if(Cat.wins(option.getBoard())){
 				score = -1000;
-				return option;
 			}
 			else if(Dog.wins(option.getBoard())){
 				score = 1000;
+				return option;
 			}
 			else{
 				score = miniMax(option, (round+1), -1000, 1000, currentBoard);
 			}
-			if (score < bestscore){
+			if (score > bestscore){
 					bestscore = score; 
 					bestmove = option;
 				}
 		}
-				
+	   recursiveLimit= recursiveLimitOrig;
 	   return bestmove;
 	}
 	
 	
+
 	private int miniMax(PossibleMove move, int round, int alpha, int beta, int[][] previousBoard){
-		if(round >= recursiveLimit){ //base case
+		long now = System.currentTimeMillis();
+		if(start+ timeLimit <= now){ //base case
 			return score(previousBoard, move);
 		}
 		
@@ -161,68 +182,6 @@ public class G2RecursiveCatPlayer extends catsdogs.sim.CatPlayer {
 		
 	}
 	
-	private ArrayList<Point2D.Double> findCats(int[][] board){
-		ArrayList<Point2D.Double> cats = new ArrayList<Point2D.Double>();
-		for (int x = 0; x < board.length; x++){
-			for (int y = 0; y < board[x].length; y++){
-				if(board[x][y] == Board.CAT){
-					cats.add(new Point2D.Double(x,y));
-				}
-			}
-		}
-		return cats;
-	}
-	
-	private int isTwoInARow(int[][] possibleBoard, int[][] previousBoard ){
-		int posCt = howManyInRow(possibleBoard);
-		int prevCt = howManyInRow(previousBoard);
-		if(posCt==prevCt){
-			return 0;
-		}else if(posCt > prevCt){
-			return 1;
-		}else{
-			return -1;
-		}
-	}
-	public int howManyInRow (int[][] board){
-		int doubleRowCt = 0;
-		for(int i = 0; i < 7; i++){
-			int catCt = 0;
-			
-			for(int j = 0; j < 7; j++){
-				if(board[i][j]==Board.CAT ){
-					catCt++;
-				}
-			}
-			if(catCt>1){
-				doubleRowCt++;
-			}
-		}
-		for(int j = 0; j < 7; j++){
-			int catCt = 0;			
-			for(int i = 0; i < 7; i++){
-				if(board[i][j]==Board.CAT){
-					catCt++;
-				}
-			}
-			if(catCt>1){
-				doubleRowCt++;
-			}
-		}
-		return doubleRowCt;
-	}
-
-	private ArrayList<Point2D.Double> findDogs(int[][] board){
-		ArrayList<Point2D.Double> dogs = new ArrayList<Point2D.Double>();
-		for (int x = 0; x < board.length; x++){
-			for (int y = 0; y < board[x].length; y++){
-				if(board[x][y] == Board.DOG){
-					dogs.add(new Point2D.Double(x,y));
-				}
-			}
-		}
-		return dogs;
-	}
 	private int findDogDistances(int [][] oldBoard, PossibleMove move){
 		//find the older location
 		//find the new location
@@ -261,32 +220,91 @@ public class G2RecursiveCatPlayer extends catsdogs.sim.CatPlayer {
 	}
 	
 	
+	
+	
+	private ArrayList<Point2D.Double> findCats(int[][] board){
+		ArrayList<Point2D.Double> cats = new ArrayList<Point2D.Double>();
+		for (int x = 0; x < board.length; x++){
+			for (int y = 0; y < board[x].length; y++){
+				if(board[x][y] == Board.CAT){
+					cats.add(new Point2D.Double(x,y));
+				}
+			}
+		}
+		return cats;
+	}
+	
+	private ArrayList<Point2D.Double> findDogs(int[][] board){
+		ArrayList<Point2D.Double> dogs = new ArrayList<Point2D.Double>();
+		for (int x = 0; x < board.length; x++){
+			for (int y = 0; y < board[x].length; y++){
+				if(board[x][y] == Board.DOG){
+					dogs.add(new Point2D.Double(x,y));
+				}
+			}
+		}
+		return dogs;
+	}
+	
+	private int isTwoInARow(int[][] possibleBoard, int[][] previousBoard ){
+		int posCt = howManyInRow(possibleBoard);
+		int prevCt = howManyInRow(previousBoard);
+		if(posCt==prevCt){
+			return 0;
+		}else if(posCt > prevCt){
+			return 1;
+		}else{
+			return -1;
+		}
+	}
+	public int howManyInRow (int[][] board){
+		int doubleRowCt = 0;
+		for(int i = 0; i < 7; i++){
+			int catCt = 0;
+			for(int j = 0; j < 7; j++){
+				if(board[i][j]==Board.CAT ){
+					catCt++;
+				}
+			}
+			if(catCt>1){
+				doubleRowCt++;
+			}
+		}
+		for(int j = 0; j < 7; j++){
+			int catCt = 0;			
+			for(int i = 0; i < 7; i++){
+				if(board[i][j]==Board.CAT){
+					catCt++;
+				}
+			}
+			if(catCt>1){
+				doubleRowCt++;
+			}
+		}
+		return doubleRowCt;
+	}
 	private int score(int [][] oldBoard, PossibleMove catMove) {
-		int score = Cat.allLegalMoves(catMove.getBoard()).size()*10;
+		int score =0;// -Cat.allLegalMoves(catMove.getBoard()).size()*10;
 		if(Cat.wins(catMove.getBoard())){
 			score = -1000;
 		}
 		else if(Dog.wins(catMove.getBoard())){
 			score = 1000;
 		}
-		if(isTwoInARow(oldBoard, catMove.getBoard())==-1){
-			score-= 15;
-		}
-		if(isTwoInARow(oldBoard, catMove.getBoard())==1){
-			score+= 15;
-		}
-		/*if(findCatDistances(oldBoard, catMove)==1){
-			score+= 5;
-		}
-		if(findCatDistances(oldBoard, catMove)==-1){
-			score-= 5;
-		}*/
+//		if(isTwoInARow(oldBoard, catMove.getBoard())==-1){
+//			score-= 5;
+//		}
+//		if(isTwoInARow(oldBoard, catMove.getBoard())==1){
+//			score+= 5;
+//		}
 		/*if(findDogDistances(oldBoard, catMove)==1){
-		score-= 5;
+			score+= 5;
 		}
 		if(findDogDistances(oldBoard, catMove)==-1){
-			score+= 5;
+			score-= 5;
 		}*/
 		return score;
 	}
+	
+
 }
