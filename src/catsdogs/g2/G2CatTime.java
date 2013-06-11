@@ -14,14 +14,14 @@ import catsdogs.sim.PossibleMove;
 public class G2CatTime extends catsdogs.sim.CatPlayer {
 	private Logger logger = Logger.getLogger(this.getClass()); // for logging
 	private final int recursiveLimit =6;
-	private final long timeLimit=4000;
+	private final double timeLimit=4000000;
 	private final double recursiveTimeLimit=0.05;
 
 	private int roundCt = 0;
-	private long start; 
+	private double start; 
 
 	public String getName() {
-		return "G2CatRecursivePlayer";
+		return "G2CatTime";
 	}
 
 	public void startNewGame() {
@@ -49,18 +49,22 @@ public class G2CatTime extends catsdogs.sim.CatPlayer {
 		
 		ArrayList<PossibleMove> moves;
 		moves = Cat.allLegalMoves(currentBoard);
-		
+		int optionCt = 0;
+		int numberOfMoves = moves.size();
 		for(PossibleMove option: moves){
 			int score;
 			if(Cat.wins(option.getBoard())){
 				score = -1000;
+				numberOfMoves--;
 				return option;
 			}
 			else if(Dog.wins(option.getBoard())){
 				score = 1000;
+				numberOfMoves--;
 			}
 			else{
-				score = miniMax(option, (double)timeLimit/moves.size(), -1000, 1000, currentBoard);
+				score = miniMax(option, 0, (timeLimit/moves.size())*(optionCt+1), -1000, 1000, currentBoard);
+				optionCt++;
 			}
 			if (score < bestscore){
 					bestscore = score; 
@@ -72,8 +76,8 @@ public class G2CatTime extends catsdogs.sim.CatPlayer {
 	}
 	
 	
-	private int miniMax(PossibleMove move, double round, int alpha, int beta, int[][] previousBoard){
-		if(round < recursiveTimeLimit){ //base case
+	private int miniMax(PossibleMove move, int round , double recursiveTimeLimit, int alpha, int beta, int[][] previousBoard){
+		if(start + recursiveTimeLimit < System.nanoTime()){ //base case
 			return score(previousBoard, move);
 		}
 		
@@ -82,6 +86,7 @@ public class G2CatTime extends catsdogs.sim.CatPlayer {
 		if(round % 3 > 0){//if Dog turn
 			moves = Dog.allLegalMoves(move.getBoard()); // get dog's moves
 			logger.info(moves.size());
+			int optionCt = 0;
 			for(PossibleMove option: moves){
 				int score;
 				if(Cat.wins(option.getBoard())){
@@ -91,7 +96,8 @@ public class G2CatTime extends catsdogs.sim.CatPlayer {
 					score = 1000;
 				}
 				else{
-					score = miniMax(option, round/moves.size(), alpha, beta, move.getBoard());
+					score = miniMax(option, (round + 1), (timeLimit/moves.size())*(optionCt+1), alpha, beta, move.getBoard());
+					optionCt++;
 				}
 				
 				if (alpha < score){
@@ -106,16 +112,18 @@ public class G2CatTime extends catsdogs.sim.CatPlayer {
 			}
 			else{//Cat turn
 				moves = Cat.allLegalMoves(move.getBoard()); // get cat's moves
+				int optionCt = 0;
 				for(PossibleMove option: moves){
 					int score;
 					if(Cat.wins(option.getBoard())){
 						score = -1000;
 					}
-					else if(Dog.wins(option.getBoard())){
+					else if(Dog.wins(option.getBoard())){ //if dog wins stop here
 						score = 1000;
 					}
 					else{
-						score = miniMax(option, (round+1), alpha, beta, move.getBoard());
+						score = miniMax(option, (round + 1), (timeLimit/moves.size())*(optionCt+1), alpha, beta, move.getBoard());
+						optionCt++;
 					}
 					
 					if (beta > score){
