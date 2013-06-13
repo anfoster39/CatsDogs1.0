@@ -13,12 +13,11 @@ import catsdogs.sim.PossibleMove;
 
 
 
-public class G2DogTime extends catsdogs.sim.DogPlayer {
+public class G2DogTimeUpdated extends catsdogs.sim.DogPlayer {
 	private Logger logger = Logger.getLogger(this.getClass()); // for logging
-//	private int recursiveLimit = 5;
-//	private int recursiveLimitOrig = 5;
-	
+
 	private double timeLimit= 400 * 1000000;
+	private int gameRound;
 
 	private double start;
 	
@@ -33,7 +32,38 @@ public class G2DogTime extends catsdogs.sim.DogPlayer {
 	@Override
 	public Move doMove1(int[][] board) {
 		start = System.nanoTime()/1000;
+		
+		
+		gameRound++;
+		
+		if (gameRound > 40){
+			timeLimit = 25 * 1000000;
+		}
+		else if (gameRound > 35){
+			timeLimit = 10 * 1000000;
+		}
+		else if (gameRound > 30){
+			timeLimit = 15 * 1000000;
+		}
+		else if (gameRound > 25){
+			timeLimit = 30 * 1000000;
+		}
+		else if (gameRound > 20){
+			timeLimit = 45 * 1000000;
+		}
+		else if (gameRound > 15){
+			timeLimit = 65 * 1000000;
+		}
+		else if (gameRound > 10){
+			timeLimit = 75 * 1000000;
+		}
+		else if (gameRound > 5){
+			timeLimit = 150 * 1000000;
+		}
+		
+		
 		Move move = getBestMove(board, 1);
+		
 		
 		double time1 = (System.nanoTime()/1000 - start) / 10000000;
 		logger.error("time: " + time1);
@@ -44,6 +74,36 @@ public class G2DogTime extends catsdogs.sim.DogPlayer {
 	@Override
 	public Move doMove2(int[][] board) {
 		start = System.nanoTime()/1000;
+		
+		gameRound++;
+		
+		if (gameRound > 40){
+			timeLimit = 25 * 1000000;
+		}
+		else if (gameRound > 35){
+			timeLimit = 10 * 1000000;
+		}
+		else if (gameRound > 30){
+			timeLimit = 15 * 1000000;
+		}
+		else if (gameRound > 25){
+			timeLimit = 30 * 1000000;
+		}
+		else if (gameRound > 20){
+			timeLimit = 45 * 1000000;
+		}
+		else if (gameRound > 15){
+			timeLimit = 65 * 1000000;
+		}
+		else if (gameRound > 10){
+			timeLimit = 75 * 1000000;
+		}
+		else if (gameRound > 5){
+			timeLimit = 150 * 1000000;
+		}
+		
+		
+		
 		Move move = getBestMove(board, 2);
 		
 		double time2 = (System.nanoTime()/1000 - start) / 1000000;
