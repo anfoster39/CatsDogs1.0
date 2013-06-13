@@ -27,8 +27,8 @@ public class GameConfig implements Cloneable{
 	public static int density = 50;
 	public static int turnProbability = 50; // TODO: make this configurable
 	int max_rounds = max_rounds_max;
-	private ArrayList<Class<CatPlayer>> availableCatPlayers;
-	private ArrayList<Class<DogPlayer>> availableDogPlayers;
+	protected ArrayList<Class<CatPlayer>> availableCatPlayers;
+	protected ArrayList<Class<DogPlayer>> availableDogPlayers;
 	private Class<CatPlayer> catPlayerClass;
 	private Class<DogPlayer> dogPlayerClass;
 	public static Random random;

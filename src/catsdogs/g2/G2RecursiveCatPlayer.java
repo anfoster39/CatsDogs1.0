@@ -74,7 +74,7 @@ public class G2RecursiveCatPlayer extends catsdogs.sim.CatPlayer {
 		
 		if(round % 3 > 0){//if Dog turn
 			moves = Dog.allLegalMoves(move.getBoard()); // get dog's moves
-			logger.info(moves.size());
+		//	logger.info(moves.size());
 			for(PossibleMove option: moves){
 				int score;
 				if(Cat.wins(option.getBoard())){
@@ -270,10 +270,10 @@ public class G2RecursiveCatPlayer extends catsdogs.sim.CatPlayer {
 			score = 1000;
 		}
 		if(isTwoInARow(oldBoard, catMove.getBoard())==-1){
-			score-= 15;
+			score-= 5;
 		}
 		if(isTwoInARow(oldBoard, catMove.getBoard())==1){
-			score+= 15;
+			score+= 5;
 		}
 		/*if(findCatDistances(oldBoard, catMove)==1){
 			score+= 5;

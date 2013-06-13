@@ -2,12 +2,7 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 
 <properties>
-	<comment>A sample configuration file.</comment>
-	
-<entry key="catsdogs.cat">catsdogs.g2.G2RecursiveCatPlayer catsdogs.g2.G2CatTime catsdogs.g2.G2CatOrthAvoidPlayer catsdogs.g0.RandomCatPlayer</entry>
-
-<entry key="catsdogs.dog">catsdogs.g2.G2RecursiveDogPlayer catsdogs.g2.G2DogTime catsdogs.g0.RandomDogPlayer</entry>
-	
-
-	
+<comment>A sample configuration file.</comment>
+<entry key="catsdogs.cat">catsdogs.g0.RandomCatPlayer catsdogs.g1.Group1Cat catsdogs.g2.G2CatTime catsdogs.g3.CatsNotInSame catsdogs.g4.Group4CatPlayerAB</entry>
+<entry key="catsdogs.dog">catsdogs.g0.RandomDogPlayer catsdogs.g1.Group1Dog catsdogs.g2.G2DogTime catsdogs.g3.DogsMaximizeCatsMoves catsdogs.g4.Group4DogPlayer</entry>
 </properties>

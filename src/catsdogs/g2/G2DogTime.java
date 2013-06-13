@@ -22,7 +22,7 @@ public class G2DogTime extends catsdogs.sim.DogPlayer {
 	private long start;
 	
 	public String getName() {
-		return "G2TimeDogPlayer";
+		return "G2TimeDogPlayerr";
 	}
 
 	public void startNewGame() {
@@ -44,7 +44,7 @@ public class G2DogTime extends catsdogs.sim.DogPlayer {
 		start = System.nanoTime()/1000;
 		Move move = getBestMove(board, 0);
 		double time = (System.nanoTime()/1000 - start) / 1000000;
-		logger.error("time taken is: " + time);
+	//	logger.error("time taken is: " + time);
 //		recursiveLimit = recursiveLimit + 2;
 		return move;
 	}
@@ -90,7 +90,7 @@ public class G2DogTime extends catsdogs.sim.DogPlayer {
 
 	private int miniMax(PossibleMove move, int round , double recursiveTimeLimit, int alpha, int beta, int[][] previousBoard){
 		if(start + recursiveTimeLimit < System.nanoTime()/1000){ //base case
-			logger.error("Limit " + recursiveTimeLimit + " Time from start: " + ((System.nanoTime()/1000)-start)+ " stopped at recursive level " + round);
+		//	logger.error("Limit " + recursiveTimeLimit + " Time from start: " + ((System.nanoTime()/1000)-start)+ " stopped at recursive level " + round);
 			return score(previousBoard, move);
 		}
 		
@@ -291,7 +291,7 @@ public class G2DogTime extends catsdogs.sim.DogPlayer {
 		return doubleRowCt;
 	}
 	private int score(int [][] oldBoard, PossibleMove catMove) {
-		int score =0;// -Cat.allLegalMoves(catMove.getBoard()).size()*10;
+		int score = -Cat.allLegalMoves(catMove.getBoard()).size()*10;
 		if(Cat.wins(catMove.getBoard())){
 			score = -1000;
 		}
