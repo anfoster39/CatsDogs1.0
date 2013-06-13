@@ -29,8 +29,8 @@ public class G2CatTime extends catsdogs.sim.CatPlayer {
 	public Move doMove(int[][] board) {
 		start = System.nanoTime()/1000;
 		Move move = getBestMove(board, 0);
-//		double time = (System.nanoTime()/1000 - start) / 1000000;
-//		logger.error("time taken is: " + time);
+		double time = (System.nanoTime()/1000 - start) / 1000000;
+		logger.error("time taken is: " + time);
 		return move;
 		
 	}

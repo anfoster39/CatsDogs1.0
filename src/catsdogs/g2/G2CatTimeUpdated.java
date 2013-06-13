@@ -13,9 +13,10 @@ import catsdogs.sim.PossibleMove;
 
 public class G2CatTimeUpdated extends catsdogs.sim.CatPlayer {
 	private Logger logger = Logger.getLogger(this.getClass()); // for logging
-	private final double timeLimit= 70000000;
-	private final double timeBreak = 5000000 - 500;
+	private double timeLimit= 400 * 1000000;
+	private final double timeBreak = (5 * 1000000) - 500;
 	private int pruningFactor;
+	private int gameRound; 
 
 	private double start; 
 
@@ -25,16 +26,50 @@ public class G2CatTimeUpdated extends catsdogs.sim.CatPlayer {
 
 	public void startNewGame() {
 		logger.info("G2 player starting new game!");
-		pruningFactor = 0;
+		gameRound = 0;
 
 	}
 	public Move doMove(int[][] board) {
-		//TODO code to adjust the time
+//		if(pruningFactor < 50000){
+//			timeLimit = 70000000;
+//		}
+//		else if(pruningFactor < 100000){
+//			timeLimit = 50000000;
+//		}
+//		else if(pruningFactor > 175000){
+//			timeLimit = 5000000;
+//		}
+		
+		gameRound++;
+		
+		if (gameRound > 40){
+			timeLimit = 25 * 1000000;
+		}
+		else if (gameRound > 35){
+			timeLimit = 10 * 1000000;
+		}
+		else if (gameRound > 30){
+			timeLimit = 15 * 1000000;
+		}
+		else if (gameRound > 25){
+			timeLimit = 30 * 1000000;
+		}
+		else if (gameRound > 20){
+			timeLimit = 50 * 1000000;
+		}
+		else if (gameRound > 10){
+			timeLimit = 75 * 1000000;
+		}
+		else if (gameRound > 5){
+			timeLimit = 150 * 1000000;
+		}
+		
+		
 		start = System.nanoTime()/1000;
 		pruningFactor = 0;
 		Move move = getBestMove(board, 0);
 		double time = (System.nanoTime()/1000 - start) / 1000000;
-		logger.error("time taken is: " + time + " Pruning_Factor: " + pruningFactor + " Dog_moves: " + Dog.allLegalMoves(board).size());
+		logger.error("time taken is: " + time +" Round " + gameRound);
 		return move;
 	}
 	
@@ -108,7 +143,8 @@ public class G2CatTimeUpdated extends catsdogs.sim.CatPlayer {
 					alpha = score;
 				}
 	            if (beta <= alpha){
-	            	pruningFactor ++;
+	            	double dRound = round;
+	            	pruningFactor += 1;//(1.0/dRound)*20;
 	            	break;
 	           }
 	            
@@ -138,10 +174,12 @@ public class G2CatTimeUpdated extends catsdogs.sim.CatPlayer {
 						beta = score;
 					}
 		            if (beta <= alpha){
-		            	pruningFactor ++;
+
+		            	double dRound = round;
+		            	pruningFactor += 1;//(1.0/dRound)*20;
 		            	break;
 		            }
-					}
+				  }
 					  return beta;
 				}
 
