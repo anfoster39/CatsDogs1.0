@@ -17,7 +17,8 @@ public class G2DogTime extends catsdogs.sim.DogPlayer {
 	private Logger logger = Logger.getLogger(this.getClass()); // for logging
 //	private int recursiveLimit = 5;
 //	private int recursiveLimitOrig = 5;
-	private final double timeLimit=5000000;
+	
+	private double timeLimit= 400 * 1000000;
 
 	private long start;
 	
@@ -32,20 +33,22 @@ public class G2DogTime extends catsdogs.sim.DogPlayer {
 	@Override
 	public Move doMove1(int[][] board) {
 		start = System.nanoTime()/1000;
-		Move move = getBestMove(board, 0);
-//		double time = (System.nanoTime()/1000 - start) / 1000000;
-//		logger.error("time taken is: " + time);
-//		recursiveLimit = recursiveLimit + 1;
+		Move move = getBestMove(board, 1);
+		
+		double time = (System.nanoTime()/1000 - start) / 10000000;
+		logger.error("time: " + time);
+		
 		return move;
 	}
 
 	@Override
 	public Move doMove2(int[][] board) {
 		start = System.nanoTime()/1000;
-		Move move = getBestMove(board, 0);
+		Move move = getBestMove(board, 2);
+		
 		double time = (System.nanoTime()/1000 - start) / 1000000;
-	//	logger.error("time taken is: " + time);
-//		recursiveLimit = recursiveLimit + 2;
+		logger.error("time:" + time);
+		
 		return move;
 	}
 	
@@ -75,7 +78,7 @@ public class G2DogTime extends catsdogs.sim.DogPlayer {
 				return option;
 			}
 			else{
-				score = miniMax(option, 0, ((timeLimit/moves.size())*(optionCt+1)), -1000, 1000, currentBoard);
+				score = miniMax(option, round, ((timeLimit/moves.size())*(optionCt+1)), -1000, 1000, currentBoard);
 			}
 			if (score > bestscore){
 					bestscore = score; 
@@ -90,7 +93,7 @@ public class G2DogTime extends catsdogs.sim.DogPlayer {
 
 	private int miniMax(PossibleMove move, int round , double recursiveTimeLimit, int alpha, int beta, int[][] previousBoard){
 		if(start + recursiveTimeLimit < System.nanoTime()/1000){ //base case
-		//	logger.error("Limit " + recursiveTimeLimit + " Time from start: " + ((System.nanoTime()/1000)-start)+ " stopped at recursive level " + round);
+//			logger.error("Limit " + recursiveTimeLimit + " Time from start: " + ((System.nanoTime()/1000)-start)+ " stopped at recursive level " + round);
 			return score(previousBoard, move);
 		}
 		
