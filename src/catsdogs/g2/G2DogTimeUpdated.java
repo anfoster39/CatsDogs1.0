@@ -41,22 +41,22 @@ public class G2DogTimeUpdated extends catsdogs.sim.DogPlayer {
 			timeLimit = 10 * 1000000;
 		}
 		else if (gameRound > 30){
-			timeLimit = 15 * 1000000;
+			timeLimit = 25 * 1000000;
 		}
 		else if (gameRound > 25){
-			timeLimit = 30 * 1000000;
+			timeLimit = 50 * 1000000;
 		}
 		else if (gameRound > 20){
 			timeLimit = 100 * 1000000;
 		}
 		else if (gameRound > 15){
-			timeLimit = 300 * 1000000;
+			timeLimit = 150 * 1000000;
 		}
 		else if (gameRound > 10){
-			timeLimit = 1000 * 1000000;
+			timeLimit = 500 * 1000000;
 		}
 		else if (gameRound > 5){
-			timeLimit = 3000 * 1000000;
+			timeLimit = 6000 * 1000000;
 		}
 	}
 	
