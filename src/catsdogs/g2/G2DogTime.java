@@ -79,6 +79,7 @@ public class G2DogTime extends catsdogs.sim.DogPlayer {
 			}
 			else{
 				score = miniMax(option, round, ((timeLimit/moves.size())*(optionCt+1)), -1000, 1000, currentBoard);
+				optionCt++;
 			}
 			if (score > bestscore){
 					bestscore = score; 

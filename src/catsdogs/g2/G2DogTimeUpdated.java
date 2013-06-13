@@ -16,18 +16,50 @@ import catsdogs.sim.PossibleMove;
 public class G2DogTimeUpdated extends catsdogs.sim.DogPlayer {
 	private Logger logger = Logger.getLogger(this.getClass()); // for logging
 
-	private double timeLimit= 400 * 1000000;
+	private double timeLimit= 5000 * 1000000;
+	private final double timeBreak = (5 * 1000000) - 1000;
+	
 	private int gameRound;
 
 	private double start;
 	
 	public String getName() {
-		return "G2TimeDogPlayerr";
+		return "G2TimeDogPlayer Updated";
 	}
 
 	public void startNewGame() {
 		logger.info("G2 player starting new game!");
 	}
+	
+	
+	
+	private void updateLimit(int gameRound){
+		if (gameRound > 40){
+			timeLimit = 25 * 1000000;
+		}
+		else if (gameRound > 35){
+			timeLimit = 10 * 1000000;
+		}
+		else if (gameRound > 30){
+			timeLimit = 15 * 1000000;
+		}
+		else if (gameRound > 25){
+			timeLimit = 30 * 1000000;
+		}
+		else if (gameRound > 20){
+			timeLimit = 100 * 1000000;
+		}
+		else if (gameRound > 15){
+			timeLimit = 300 * 1000000;
+		}
+		else if (gameRound > 10){
+			timeLimit = 1000 * 1000000;
+		}
+		else if (gameRound > 5){
+			timeLimit = 3000 * 1000000;
+		}
+	}
+	
 	
 	@Override
 	public Move doMove1(int[][] board) {
@@ -35,79 +67,30 @@ public class G2DogTimeUpdated extends catsdogs.sim.DogPlayer {
 		
 		
 		gameRound++;
-		
-		if (gameRound > 40){
-			timeLimit = 25 * 1000000;
-		}
-		else if (gameRound > 35){
-			timeLimit = 10 * 1000000;
-		}
-		else if (gameRound > 30){
-			timeLimit = 15 * 1000000;
-		}
-		else if (gameRound > 25){
-			timeLimit = 30 * 1000000;
-		}
-		else if (gameRound > 20){
-			timeLimit = 45 * 1000000;
-		}
-		else if (gameRound > 15){
-			timeLimit = 65 * 1000000;
-		}
-		else if (gameRound > 10){
-			timeLimit = 75 * 1000000;
-		}
-		else if (gameRound > 5){
-			timeLimit = 150 * 1000000;
-		}
-		
+		updateLimit(gameRound);
 		
 		Move move = getBestMove(board, 1);
 		
 		
-		double time1 = (System.nanoTime()/1000 - start) / 10000000;
-		logger.error("time: " + time1);
+		double time1 = (System.nanoTime()/1000 - start) / 1000000;
+		logger.error("time: " + time1 + " round: " + gameRound);
 		
 		return move;
 	}
+	
 
 	@Override
 	public Move doMove2(int[][] board) {
 		start = System.nanoTime()/1000;
 		
 		gameRound++;
-		
-		if (gameRound > 40){
-			timeLimit = 25 * 1000000;
-		}
-		else if (gameRound > 35){
-			timeLimit = 10 * 1000000;
-		}
-		else if (gameRound > 30){
-			timeLimit = 15 * 1000000;
-		}
-		else if (gameRound > 25){
-			timeLimit = 30 * 1000000;
-		}
-		else if (gameRound > 20){
-			timeLimit = 45 * 1000000;
-		}
-		else if (gameRound > 15){
-			timeLimit = 65 * 1000000;
-		}
-		else if (gameRound > 10){
-			timeLimit = 75 * 1000000;
-		}
-		else if (gameRound > 5){
-			timeLimit = 150 * 1000000;
-		}
-		
+		updateLimit(gameRound);
 		
 		
 		Move move = getBestMove(board, 2);
 		
 		double time2 = (System.nanoTime()/1000 - start) / 1000000;
-		logger.error("time:" + time2);
+		logger.error("time: " + time2 + " round: " + gameRound);
 		
 		return move;
 	}
@@ -139,6 +122,7 @@ public class G2DogTimeUpdated extends catsdogs.sim.DogPlayer {
 			}
 			else{
 				score = miniMax(option, round, ((timeLimit/moves.size())*(optionCt+1)), -1000, 1000, currentBoard);
+				optionCt++;
 			}
 			if (score > bestscore){
 					bestscore = score; 
@@ -165,6 +149,9 @@ public class G2DogTimeUpdated extends catsdogs.sim.DogPlayer {
 			int optionCt = 0;
 			for(PossibleMove option: moves){
 				int score;
+				if(System.nanoTime()/1000 - start > timeBreak){
+					return alpha;
+				}
 				if(Cat.wins(option.getBoard())){
 					score = -1000;
 				}
@@ -191,6 +178,9 @@ public class G2DogTimeUpdated extends catsdogs.sim.DogPlayer {
 				int optionCt = 0;
 				for(PossibleMove option: moves){
 					int score;
+					if(System.nanoTime()/1000 - start > timeBreak){
+						return beta;
+					}
 					if(Cat.wins(option.getBoard())){
 						score = -1000;
 					}

@@ -30,15 +30,6 @@ public class G2CatTimeUpdated extends catsdogs.sim.CatPlayer {
 
 	}
 	public Move doMove(int[][] board) {
-//		if(pruningFactor < 50000){
-//			timeLimit = 70000000;
-//		}
-//		else if(pruningFactor < 100000){
-//			timeLimit = 50000000;
-//		}
-//		else if(pruningFactor > 175000){
-//			timeLimit = 5000000;
-//		}
 		
 		gameRound++;
 		
