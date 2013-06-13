@@ -13,16 +13,17 @@ import catsdogs.sim.PossibleMove;
 
 
 
-public class G2DogTimeUpdated extends catsdogs.sim.DogPlayer {
+public class G2DogTime extends catsdogs.sim.DogPlayer {
 	private Logger logger = Logger.getLogger(this.getClass()); // for logging
+//	private int recursiveLimit = 5;
+//	private int recursiveLimitOrig = 5;
+	
 	private double timeLimit= 400 * 1000000;
-	private final double timeBreak = (5 * 1000000) - 1000;
-	private int gameRound; 
 
-	private long start;
+	private double start;
 	
 	public String getName() {
-		return "G2TimeDogPlayer Updated";
+		return "G2TimeDogPlayerr";
 	}
 
 	public void startNewGame() {
@@ -32,38 +33,10 @@ public class G2DogTimeUpdated extends catsdogs.sim.DogPlayer {
 	@Override
 	public Move doMove1(int[][] board) {
 		start = System.nanoTime()/1000;
-		
-		gameRound++;
-		
-		if (gameRound > 40){
-			timeLimit = 25 * 1000000;
-		}
-		else if (gameRound > 35){
-			timeLimit = 10 * 1000000;
-		}
-		else if (gameRound > 30){
-			timeLimit = 15 * 1000000;
-		}
-		else if (gameRound > 25){
-			timeLimit = 30 * 1000000;
-		}
-		else if (gameRound > 20){
-			timeLimit = 45 * 1000000;
-		}
-		else if (gameRound > 15){
-			timeLimit = 65 * 1000000;
-		}
-		else if (gameRound > 10){
-			timeLimit = 75 * 1000000;
-		}
-		else if (gameRound > 5){
-			timeLimit = 150 * 1000000;
-		}
-		
 		Move move = getBestMove(board, 1);
 		
-		double time = (System.nanoTime()/1000 - start) / 1000000;
-		logger.error("time: " + time +" Round " + gameRound);
+		double time1 = (System.nanoTime()/1000 - start) / 10000000;
+		logger.error("time: " + time1);
 		
 		return move;
 	}
@@ -71,40 +44,10 @@ public class G2DogTimeUpdated extends catsdogs.sim.DogPlayer {
 	@Override
 	public Move doMove2(int[][] board) {
 		start = System.nanoTime()/1000;
-		
-		gameRound++;
-		
-		if (gameRound > 40){
-			timeLimit = 25 * 1000000;
-		}
-		else if (gameRound > 35){
-			timeLimit = 10 * 1000000;
-		}
-		else if (gameRound > 30){
-			timeLimit = 15 * 1000000;
-		}
-		else if (gameRound > 25){
-			timeLimit = 30 * 1000000;
-		}
-		else if (gameRound > 20){
-			timeLimit = 45 * 1000000;
-		}
-		else if (gameRound > 15){
-			timeLimit = 65 * 1000000;
-		}
-		else if (gameRound > 10){
-			timeLimit = 75 * 1000000;
-		}
-		else if (gameRound > 5){
-			timeLimit = 150 * 1000000;
-		}
-		
-		
-		
 		Move move = getBestMove(board, 2);
-		double time = (System.nanoTime()/1000 - start) / 1000000;
 		
-		logger.error("time: " + time +" Round " + gameRound);
+		double time2 = (System.nanoTime()/1000 - start) / 1000000;
+		logger.error("time:" + time2);
 		
 		return move;
 	}
@@ -135,7 +78,7 @@ public class G2DogTimeUpdated extends catsdogs.sim.DogPlayer {
 				return option;
 			}
 			else{
-				score = miniMax(option, 0, ((timeLimit/moves.size())*(optionCt+1)), -1000, 1000, currentBoard);
+				score = miniMax(option, round, ((timeLimit/moves.size())*(optionCt+1)), -1000, 1000, currentBoard);
 			}
 			if (score > bestscore){
 					bestscore = score; 
@@ -150,7 +93,7 @@ public class G2DogTimeUpdated extends catsdogs.sim.DogPlayer {
 
 	private int miniMax(PossibleMove move, int round , double recursiveTimeLimit, int alpha, int beta, int[][] previousBoard){
 		if(start + recursiveTimeLimit < System.nanoTime()/1000){ //base case
-		//	logger.error("Limit " + recursiveTimeLimit + " Time from start: " + ((System.nanoTime()/1000)-start)+ " stopped at recursive level " + round);
+//			logger.error("Limit " + recursiveTimeLimit + " Time from start: " + ((System.nanoTime()/1000)-start)+ " stopped at recursive level " + round);
 			return score(previousBoard, move);
 		}
 		
@@ -161,9 +104,6 @@ public class G2DogTimeUpdated extends catsdogs.sim.DogPlayer {
 			logger.info(moves.size());
 			int optionCt = 0;
 			for(PossibleMove option: moves){
-				if(System.nanoTime()/1000 - start > timeBreak){
-					return alpha;
-				}
 				int score;
 				if(Cat.wins(option.getBoard())){
 					score = -1000;
@@ -190,9 +130,6 @@ public class G2DogTimeUpdated extends catsdogs.sim.DogPlayer {
 				moves = Cat.allLegalMoves(move.getBoard()); // get cat's moves
 				int optionCt = 0;
 				for(PossibleMove option: moves){
-					if(System.nanoTime()/1000 - start > timeBreak){
-						return beta;
-					}
 					int score;
 					if(Cat.wins(option.getBoard())){
 						score = -1000;

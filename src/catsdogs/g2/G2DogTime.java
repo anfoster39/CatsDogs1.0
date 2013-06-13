@@ -20,7 +20,7 @@ public class G2DogTime extends catsdogs.sim.DogPlayer {
 	
 	private double timeLimit= 400 * 1000000;
 
-	private long start;
+	private double start;
 	
 	public String getName() {
 		return "G2TimeDogPlayerr";
@@ -35,8 +35,8 @@ public class G2DogTime extends catsdogs.sim.DogPlayer {
 		start = System.nanoTime()/1000;
 		Move move = getBestMove(board, 1);
 		
-		double time = (System.nanoTime()/1000 - start) / 10000000;
-		logger.error("time: " + time);
+		double time1 = (System.nanoTime()/1000 - start) / 10000000;
+		logger.error("time: " + time1);
 		
 		return move;
 	}
@@ -46,8 +46,8 @@ public class G2DogTime extends catsdogs.sim.DogPlayer {
 		start = System.nanoTime()/1000;
 		Move move = getBestMove(board, 2);
 		
-		double time = (System.nanoTime()/1000 - start) / 1000000;
-		logger.error("time:" + time);
+		double time2 = (System.nanoTime()/1000 - start) / 1000000;
+		logger.error("time:" + time2);
 		
 		return move;
 	}
