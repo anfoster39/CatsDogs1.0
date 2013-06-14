@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
 
+import catsdogs.g2.G2CatTimeThreadBasic.ThreadDemo;
 import catsdogs.sim.Board;
 import catsdogs.sim.Cat;
 import catsdogs.sim.Dog;
@@ -13,18 +14,18 @@ import catsdogs.sim.PossibleMove;
 
 
 
-public class G2DogTimeUpdated extends catsdogs.sim.DogPlayer {
+public class G2DogTimeThreadBasic extends catsdogs.sim.DogPlayer {
 	private Logger logger = Logger.getLogger(this.getClass()); // for logging
 
-	private double timeLimit= 6000 * 1000000;
-	private final double timeBreak = (5 * 1000000) - 1000;
+	private double timeLimit= 5 * 1000000;
+	private final double timeBreak = (5 * 1000000) - 10000;
 	
 	private int gameRound;
 
 	private double start;
 	
 	public String getName() {
-		return "G2TimeDogPlayer Updated";
+		return "G2TimeDogPlayer Updated ou";
 	}
 
 	public void startNewGame() {
@@ -34,7 +35,7 @@ public class G2DogTimeUpdated extends catsdogs.sim.DogPlayer {
 	
 	
 	private void updateLimit(int gameRound){
-		if (gameRound > 40){
+		/*if (gameRound > 40){
 			timeLimit = 10 * 1000000;
 		}
 		else if (gameRound > 35){
@@ -58,7 +59,7 @@ public class G2DogTimeUpdated extends catsdogs.sim.DogPlayer {
 		else if (gameRound > 5){
 			timeLimit = 500 * 1000000;
 		}
-	}
+*/	}
 	
 	
 	@Override
@@ -69,16 +70,48 @@ public class G2DogTimeUpdated extends catsdogs.sim.DogPlayer {
 		gameRound++;
 		updateLimit(gameRound);
 		
-		Move move = getBestMove(board, 1);
-		
+		ThreadDemo myRunnable = new ThreadDemo(board,1);
+		new Thread(myRunnable).start();
+		try {
+			Thread.sleep(4500);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if(myRunnable.thPm==null){
+			logger.error("urg");
+			return Dog.allLegalMoves(board).get(0);
+		}
+		Move move = myRunnable.thPm;		
 		
 		double time1 = (System.nanoTime()/1000 - start) / 1000000;
-	//	logger.error("time: " + time1 + " round: " + gameRound);
+		logger.error("time: " + time1 + " round: " + gameRound);
 		
 		return move;
 	}
 	
-
+	public class ThreadDemo implements Runnable {
+		public int[][] board;
+		public int thRound;
+		public PossibleMove prePm;
+		double rtl;
+		public PossibleMove thPm;
+		int thAlpha;
+		int thBeta;
+		int score;
+		int sz;
+		double opz;
+		public ThreadDemo( int[][] previousBoard, int round){
+			thRound = round;
+			board = previousBoard;
+		
+			
+		}
+		   public void run() {
+			  thPm =  getBestMove(board,thRound);
+		     
+		   }	
+	}
 	@Override
 	public Move doMove2(int[][] board) {
 		start = System.nanoTime()/1000;
@@ -86,11 +119,21 @@ public class G2DogTimeUpdated extends catsdogs.sim.DogPlayer {
 		gameRound++;
 		updateLimit(gameRound);
 		
-		
-		Move move = getBestMove(board, 2);
+		ThreadDemo myRunnable = new ThreadDemo(board,2);
+		new Thread(myRunnable).start();
+		try {
+			Thread.sleep(4500);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if(myRunnable.thPm==null){
+			return Dog.allLegalMoves(board).get(0);
+		}
+		Move move = myRunnable.thPm;
 		
 		double time2 = (System.nanoTime()/1000 - start) / 1000000;
-		//logger.error("time: " + time2 + " round: " + gameRound);
+		logger.error("time: " + time2 + " round: " + gameRound);
 		
 		return move;
 	}
@@ -114,10 +157,10 @@ public class G2DogTimeUpdated extends catsdogs.sim.DogPlayer {
 		for(PossibleMove option: moves){
 			int score;
 			if(Cat.wins(option.getBoard())){
-				score = -1000;
+				score = -1000+round;
 			}
 			else if(Dog.wins(option.getBoard())){
-				score = 1000;
+				score = 1000-round;
 				return option;
 			}
 			else{
@@ -138,7 +181,7 @@ public class G2DogTimeUpdated extends catsdogs.sim.DogPlayer {
 	private int miniMax(PossibleMove move, int round , double recursiveTimeLimit, int alpha, int beta, int[][] previousBoard){
 		if(start + recursiveTimeLimit < System.nanoTime()/1000){ //base case
 //			logger.error("Limit " + recursiveTimeLimit + " Time from start: " + ((System.nanoTime()/1000)-start)+ " stopped at recursive level " + round);
-			return score(previousBoard, move);
+			return score(previousBoard, move, round);
 		}
 		
 		ArrayList<PossibleMove> moves;
@@ -153,10 +196,10 @@ public class G2DogTimeUpdated extends catsdogs.sim.DogPlayer {
 					return alpha;
 				}
 				if(Cat.wins(option.getBoard())){
-					score = -1000;
+					score = -1000+round;
 				}
 				else if(Dog.wins(option.getBoard())){ //if dog wins stop here
-					score = 1000;
+					score = 1000-round;
 				}
 				else{
 					score = miniMax(option, (round + 1), (recursiveTimeLimit/moves.size())*(optionCt+1), alpha, beta, move.getBoard());
@@ -182,10 +225,10 @@ public class G2DogTimeUpdated extends catsdogs.sim.DogPlayer {
 						return beta;
 					}
 					if(Cat.wins(option.getBoard())){
-						score = -1000;
+						score = -1000+round;
 					}
 					else if(Dog.wins(option.getBoard())){ //if dog wins stop here
-						score = 1000;
+						score = 1000-round;
 					}
 					else{
 						score = miniMax(option, (round + 1), (recursiveTimeLimit/moves.size())*(optionCt+1), alpha, beta, move.getBoard());
@@ -343,13 +386,13 @@ public class G2DogTimeUpdated extends catsdogs.sim.DogPlayer {
 		}
 		return doubleRowCt;
 	}
-	private int score(int [][] oldBoard, PossibleMove catMove) {
+	private int score(int [][] oldBoard, PossibleMove catMove, int round) {
 		int score = -Cat.allLegalMoves(catMove.getBoard()).size()*10;
 		if(Cat.wins(catMove.getBoard())){
-			score = -1000;
+			score = -1000+round;
 		}
 		else if(Dog.wins(catMove.getBoard())){
-			score = 1000;
+			score = 1000-round;
 		}
 //		if(isTwoInARow(oldBoard, catMove.getBoard())==-1){
 //			score-= 5;

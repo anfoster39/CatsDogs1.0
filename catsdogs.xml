@@ -3,6 +3,6 @@
 
 <properties>
 <comment>A sample configuration file.</comment>
-<entry key="catsdogs.cat">catsdogs.g0.RandomCatPlayer catsdogs.g1.Group1Cat catsdogs.g2.G2CatTimeUpdated catsdogs.g3.CatsNotInSame catsdogs.g4.Group4CatPlayerAB</entry>
-<entry key="catsdogs.dog">catsdogs.g0.RandomDogPlayer catsdogs.g2.G2DogTimeUpdated catsdogs.g3.DogsMaximizeCatsMoves catsdogs.g4.Group4DogPlayer</entry>
+<entry key="catsdogs.cat">catsdogs.g0.RandomCatPlayer catsdogs.g1.Group1Cat catsdogs.g2.G2CatTimeUpdatedou catsdogs.g3.CatsNotInSame catsdogs.g4.Group4CatPlayerAB</entry>
+<entry key="catsdogs.dog">catsdogs.g0.RandomDogPlayer catsdogs.g1.Group1Dog catsdogs.g2.G2DogTimeUpdatedou catsdogs.g3.DogsGetCatsSame catsdogs.g4.Group4DogPlayer</entry>
 </properties>
