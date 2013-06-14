@@ -21,7 +21,7 @@ public class G2CatTimeThAdv extends catsdogs.sim.CatPlayer {
 	private double start; 
 
 	public String getName() {
-		return "G2CatTimeUpdated ou";
+		return "G2CatTimeThAdv";
 	}
 
 	public void startNewGame() {
@@ -60,7 +60,7 @@ public class G2CatTimeThAdv extends catsdogs.sim.CatPlayer {
 		
 		start = System.nanoTime()/1000;
 		pruningFactor = 0;
-			ThreadDemo myRunnable = new ThreadDemo(board,0);
+			/*ThreadDemo myRunnable = new ThreadDemo(board,0);
 		new Thread(myRunnable).start();
 		try {
 			Thread.sleep(4500);
@@ -70,8 +70,8 @@ public class G2CatTimeThAdv extends catsdogs.sim.CatPlayer {
 		}
 		if(myRunnable.thPm==null){
 			return Cat.allLegalMoves(board).get(0);
-		}
-		Move move = myRunnable.thPm;
+		}*/
+		Move move = getBestMove(board, 0);
 	//	double time = (System.nanoTime()/1000 - start) / 1000000;
 	//	logger.error("time: " + time +" Round " + gameRound);
 		return move;
@@ -95,14 +95,17 @@ public class G2CatTimeThAdv extends catsdogs.sim.CatPlayer {
 		int score;
 		int sz;
 		double opz;
-		public ThreadDemo( int[][] previousBoard, int round){
+		public ThreadDemo(PossibleMove pm, int round, double option, int alpha, int beta, int[][] previousBoard){
 			thRound = round;
 			board = previousBoard;
-		
+			prePm = pm;
+			thAlpha=alpha;
+			thBeta = beta;
+			double opz = option;
 			
 		}
 		   public void run() {
-			  thPm =  getBestMove(board,thRound);
+			  score =  miniMax(prePm, thRound, opz, thAlpha, thBeta,board);
 		     
 		   }	
 	}
@@ -126,10 +129,21 @@ public class G2CatTimeThAdv extends catsdogs.sim.CatPlayer {
 			}
 			else{
 
-			/*	ThreadDemo myRunnable = new ThreadDemo(option, 1, ((timeLimit/moves.size())*(optionCt+1)), -1000, 1000, currentBoard);
+				ThreadDemo myRunnable = new ThreadDemo(option, 1, ((timeLimit/moves.size())*(optionCt+1)), -1000, 1000, currentBoard);
 				new Thread(myRunnable).start();
-				score = myRunnable.score;*/
-				score = miniMax(option, 1, ((timeLimit/moves.size())*(optionCt+1)), -1000, 1000, currentBoard);
+				try {
+					long sleepTime = 4500/moves.size();
+					Thread.sleep(sleepTime);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				if(myRunnable.score!=0){
+					score = myRunnable.score;
+				}else{
+					score =2000;
+				}
+				//score = miniMax(option, 1, ((timeLimit/moves.size())*(optionCt+1)), -1000, 1000, currentBoard);
 				optionCt++;
 			//	logger.error(score);
 			}

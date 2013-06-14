@@ -13,7 +13,7 @@ import catsdogs.sim.PossibleMove;
 
 public class G2CatTimeThreadBasic extends catsdogs.sim.CatPlayer {
 	private Logger logger = Logger.getLogger(this.getClass()); // for logging
-	private double timeLimit= 5 * 1000000;
+	private double timeLimit= 400 * 1000000;
 	private final double timeBreak = (5 * 1000000) - 100000;
 	private int pruningFactor;
 	private int gameRound; 
@@ -21,7 +21,7 @@ public class G2CatTimeThreadBasic extends catsdogs.sim.CatPlayer {
 	private double start; 
 
 	public String getName() {
-		return "G2CatTimeUpdated ou";
+		return "G2CatTimeThreadBasic";
 	}
 
 	public void startNewGame() {
@@ -33,7 +33,7 @@ public class G2CatTimeThreadBasic extends catsdogs.sim.CatPlayer {
 		
 		gameRound++;
 		
-		/*if (gameRound > 40){
+		if (gameRound > 40){
 			timeLimit = 25 * 1000000;
 		}
 		else if (gameRound > 35){
@@ -56,7 +56,7 @@ public class G2CatTimeThreadBasic extends catsdogs.sim.CatPlayer {
 		}
 		else if (gameRound > 5){
 			timeLimit = 150 * 1000000;
-		}*/
+		}
 		
 		start = System.nanoTime()/1000;
 		pruningFactor = 0;

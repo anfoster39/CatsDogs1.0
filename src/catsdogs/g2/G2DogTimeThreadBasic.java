@@ -17,7 +17,7 @@ import catsdogs.sim.PossibleMove;
 public class G2DogTimeThreadBasic extends catsdogs.sim.DogPlayer {
 	private Logger logger = Logger.getLogger(this.getClass()); // for logging
 
-	private double timeLimit= 5 * 1000000;
+	private double timeLimit= 6000 * 1000000;
 	private final double timeBreak = (5 * 1000000) - 10000;
 	
 	private int gameRound;
@@ -25,7 +25,7 @@ public class G2DogTimeThreadBasic extends catsdogs.sim.DogPlayer {
 	private double start;
 	
 	public String getName() {
-		return "G2TimeDogPlayer Updated ou";
+		return "G2TimeDogPlayerThreadBasic";
 	}
 
 	public void startNewGame() {
@@ -35,7 +35,7 @@ public class G2DogTimeThreadBasic extends catsdogs.sim.DogPlayer {
 	
 	
 	private void updateLimit(int gameRound){
-		/*if (gameRound > 40){
+		if (gameRound > 40){
 			timeLimit = 10 * 1000000;
 		}
 		else if (gameRound > 35){
@@ -59,7 +59,7 @@ public class G2DogTimeThreadBasic extends catsdogs.sim.DogPlayer {
 		else if (gameRound > 5){
 			timeLimit = 500 * 1000000;
 		}
-*/	}
+	}
 	
 	
 	@Override
@@ -128,6 +128,7 @@ public class G2DogTimeThreadBasic extends catsdogs.sim.DogPlayer {
 			e.printStackTrace();
 		}
 		if(myRunnable.thPm==null){
+			logger.error("ah2");
 			return Dog.allLegalMoves(board).get(0);
 		}
 		Move move = myRunnable.thPm;
