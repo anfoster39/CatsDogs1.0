@@ -92,7 +92,7 @@ public class G2DogTimeThAdv extends catsdogs.sim.DogPlayer {
 			e.printStackTrace();
 		}
 		if(myRunnable.thPm==null){
-			return Cat.allLegalMoves(board).get(0);
+			return Dog.allLegalMoves(board).get(0);
 		}
 		Move move = myRunnable.thPm;		
 		double time1 = (System.nanoTime()/1000 - start) / 1000000;
@@ -154,7 +154,7 @@ public class G2DogTimeThAdv extends catsdogs.sim.DogPlayer {
 			e.printStackTrace();
 		}
 		if(myRunnable.thPm==null){
-			return Cat.allLegalMoves(board).get(0);
+			return Dog.allLegalMoves(board).get(0);
 		}
 		Move move = myRunnable.thPm;		
 		//double time2 = (System.nanoTime()/1000 - start) / 1000000;
@@ -452,18 +452,18 @@ public class G2DogTimeThAdv extends catsdogs.sim.DogPlayer {
 		return doubleRowCt;
 	}
 	private int score(int [][] oldBoard, PossibleMove catMove, int round) {
-		int score = -Cat.allLegalMoves(catMove.getBoard()).size()*10;
-	/*	if(Cat.wins(catMove.getBoard())){
+		int score = -Cat.allLegalMoves(catMove.getBoard()).size();
+		if(Cat.wins(catMove.getBoard())){
 			score = -1000+round;
 		}
 		else if(Dog.wins(catMove.getBoard())){
 			score = 1000-round;
-		}*/
+		}
 		if(isTwoInARow(oldBoard, catMove.getBoard())==-1){
-			score-= 5;
+			score-= 50;
 		}
 		if(isTwoInARow(oldBoard, catMove.getBoard())==1){
-			score+= 5;
+			score+= 50;
 		}
 		/*if(findDogDistances(oldBoard, catMove)==1){
 			score+= 5;
