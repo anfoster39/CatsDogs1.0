@@ -101,7 +101,7 @@ public class G2CatTimeThAdv extends catsdogs.sim.CatPlayer {
 			prePm = pm;
 			thAlpha=alpha;
 			thBeta = beta;
-			double opz = option;
+			opz = option;
 			
 		}
 		   public void run() {
@@ -304,17 +304,17 @@ public class G2CatTimeThAdv extends catsdogs.sim.CatPlayer {
 //		return cats;
 //	}
 //	
-//	private int isTwoInARow(int[][] possibleBoard, int[][] previousBoard ){
-//		int posCt = howManyInRow(possibleBoard);
-//		int prevCt = howManyInRow(previousBoard);
-//		if(posCt==prevCt){
-//			return 0;
-//		}else if(posCt > prevCt){
-//			return 1;
-//		}else{
-//			return -1;
-//		}
-//	}
+	private int isTwoInARow(int[][] possibleBoard, int[][] previousBoard ){
+		int posCt = howManyInRow(possibleBoard);
+		int prevCt = howManyInRow(previousBoard);
+		if(posCt==prevCt){
+			return 0;
+		}else if(posCt > prevCt){
+			return 1;
+		}else{
+			return -1;
+		}
+	}
 	public int howManyInRow (int[][] board){
 		int doubleRowCt = 0;
 		for(int i = 0; i < 7; i++){
@@ -400,12 +400,12 @@ public class G2CatTimeThAdv extends catsdogs.sim.CatPlayer {
 		else if(Dog.wins(catMove.getBoard())){
 			score = 1000-round;
 		}
-		/*if(isTwoInARow(oldBoard, catMove.getBoard())==-1){
+		if(isTwoInARow(oldBoard, catMove.getBoard())==-1){
 			score-= 15;
 		}
 		if(isTwoInARow(oldBoard, catMove.getBoard())==1){
 			score+= 15;
-		}
+		}/*
 		if(findCatDistances(oldBoard, catMove)==1){
 			score+= 5;
 		}

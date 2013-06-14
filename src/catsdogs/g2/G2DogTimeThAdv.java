@@ -92,6 +92,7 @@ public class G2DogTimeThAdv extends catsdogs.sim.DogPlayer {
 			e.printStackTrace();
 		}
 		if(myRunnable.thPm==null){
+			logger.error("mv1  out");
 			return Dog.allLegalMoves(board).get(0);
 		}
 		Move move = myRunnable.thPm;		
@@ -118,7 +119,7 @@ public class G2DogTimeThAdv extends catsdogs.sim.DogPlayer {
 			prePm = pm;
 			thAlpha=alpha;
 			thBeta = beta;
-			double opz = option;
+		    opz = option;
 			
 		}
 		   public void run() {
@@ -154,11 +155,13 @@ public class G2DogTimeThAdv extends catsdogs.sim.DogPlayer {
 			e.printStackTrace();
 		}
 		if(myRunnable.thPm==null){
+			logger.error("mv2  out");
+
 			return Dog.allLegalMoves(board).get(0);
 		}
 		Move move = myRunnable.thPm;		
-		//double time2 = (System.nanoTime()/1000 - start) / 1000000;
-		//logger.error("time: " + time2 + " round: " + gameRound);
+		double time2 = (System.nanoTime()/1000 - start) / 1000000;
+	//	logger.error("time: " + time2 + " round: " + gameRound);
 		
 		return move;
 	}
@@ -200,7 +203,7 @@ public class G2DogTimeThAdv extends catsdogs.sim.DogPlayer {
 					e.printStackTrace();
 				}
 				if(myRunnable.score!=0){
-					logger.error(myRunnable.score);
+				//	logger.error(myRunnable.score);
 					score = myRunnable.score;
 				}else{
 					//logger.error("urg");
@@ -452,24 +455,24 @@ public class G2DogTimeThAdv extends catsdogs.sim.DogPlayer {
 		return doubleRowCt;
 	}
 	private int score(int [][] oldBoard, PossibleMove catMove, int round) {
-		int score = -Cat.allLegalMoves(catMove.getBoard()).size();
+		int score = -Cat.allLegalMoves(catMove.getBoard()).size()*10;
 		if(Cat.wins(catMove.getBoard())){
 			score = -1000+round;
 		}
 		else if(Dog.wins(catMove.getBoard())){
 			score = 1000-round;
 		}
-		if(isTwoInARow(oldBoard, catMove.getBoard())==-1){
+		/*if(isTwoInARow(oldBoard, catMove.getBoard())==-1){
 			score-= 50;
 		}
 		if(isTwoInARow(oldBoard, catMove.getBoard())==1){
 			score+= 50;
-		}
+		}*/
 		/*if(findDogDistances(oldBoard, catMove)==1){
-			score+= 5;
+			score-= 5;
 		}
 		if(findDogDistances(oldBoard, catMove)==-1){
-			score-= 5;
+			score+= 5;
 		}*/
 		return score;
 	}
