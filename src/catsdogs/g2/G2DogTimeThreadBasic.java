@@ -79,13 +79,13 @@ public class G2DogTimeThreadBasic extends catsdogs.sim.DogPlayer {
 			e.printStackTrace();
 		}
 		if(myRunnable.thPm==null){
-			logger.error("urg");
+		//	logger.error("urg");
 			return Dog.allLegalMoves(board).get(0);
 		}
 		Move move = myRunnable.thPm;		
 		
 		double time1 = (System.nanoTime()/1000 - start) / 1000000;
-		logger.error("time: " + time1 + " round: " + gameRound);
+		//logger.error("time: " + time1 + " round: " + gameRound);
 		
 		return move;
 	}
@@ -128,13 +128,13 @@ public class G2DogTimeThreadBasic extends catsdogs.sim.DogPlayer {
 			e.printStackTrace();
 		}
 		if(myRunnable.thPm==null){
-			logger.error("ah2");
+			//logger.error("ah2");
 			return Dog.allLegalMoves(board).get(0);
 		}
 		Move move = myRunnable.thPm;
 		
 		double time2 = (System.nanoTime()/1000 - start) / 1000000;
-		logger.error("time: " + time2 + " round: " + gameRound);
+		//logger.error("time: " + time2 + " round: " + gameRound);
 		
 		return move;
 	}

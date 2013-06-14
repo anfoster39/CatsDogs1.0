@@ -69,7 +69,7 @@ public class G2CatTimeThreadBasic extends catsdogs.sim.CatPlayer {
 			e.printStackTrace();
 		}
 		if(myRunnable.thPm==null){
-			logger.error("urg");
+			//logger.error("urg");
 			return Cat.allLegalMoves(board).get(0);
 		}
 		Move move = myRunnable.thPm;

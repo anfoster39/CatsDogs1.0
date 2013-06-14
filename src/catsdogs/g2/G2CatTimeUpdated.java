@@ -92,7 +92,7 @@ public class G2CatTimeUpdated extends catsdogs.sim.CatPlayer {
 				score = 1000;
 			}
 			else{
-				score = miniMax(option, 0, ((timeLimit/moves.size())*(optionCt+1)), -1000, 1000, currentBoard);
+				score = miniMax(option, 1, ((timeLimit/moves.size())*(optionCt+1)), -1000, 1000, currentBoard);
 				optionCt++;
 			}
 			if (score < bestscore){
