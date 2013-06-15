@@ -11,7 +11,7 @@ import catsdogs.sim.Dog;
 import catsdogs.sim.Move;
 import catsdogs.sim.PossibleMove;
 
-public class G2CatTimeUpdated extends catsdogs.sim.CatPlayer {
+public class G2CatFinal extends catsdogs.sim.CatPlayer {
 	private Logger logger = Logger.getLogger(this.getClass()); // for logging
 	private double timeLimit= 5 * 1000000;
 	private final double timeBreak = (5 * 1000000) - 1000;

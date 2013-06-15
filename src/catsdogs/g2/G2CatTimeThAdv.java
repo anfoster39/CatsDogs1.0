@@ -13,11 +13,9 @@ import catsdogs.sim.PossibleMove;
 
 public class G2CatTimeThAdv extends catsdogs.sim.CatPlayer {
 	private Logger logger = Logger.getLogger(this.getClass()); // for logging
-	private double timeLimit= 400 * 1000000;
+	private double timeLimit= 40 * 1000000;
 	private final double timeBreak = (5 * 1000000) - 100000;
-	private int pruningFactor;
 	private int gameRound; 
-
 	private double start; 
 
 	public String getName() {
@@ -27,40 +25,38 @@ public class G2CatTimeThAdv extends catsdogs.sim.CatPlayer {
 	public void startNewGame() {
 		logger.info("G2 player starting new game!");
 		gameRound = 0;
-
 	}
 	public Move doMove(int[][] board) {
 		
 		gameRound++;
-		
+/*		
 		if (gameRound > 40){
 			timeLimit = 25 * 1000000;
 		}
 		else if (gameRound > 35){
-			timeLimit = 10 * 1000000;
-		}
-		else if (gameRound > 30){
 			timeLimit = 15 * 1000000;
 		}
+		else if (gameRound > 30){
+			timeLimit = 7 * 1000000;
+		}
 		else if (gameRound > 25){
-			timeLimit = 30 * 1000000;
+			timeLimit = 15 * 1000000;
 		}
 		else if (gameRound > 20){
-			timeLimit = 45 * 1000000;
+			timeLimit = 42 * 1000000;
 		}
 		else if (gameRound > 15){
-			timeLimit = 65 * 1000000;
+			timeLimit = 35 * 1000000;
 		}
 		else if (gameRound > 10){
-			timeLimit = 75 * 1000000;
+			timeLimit = 45 * 1000000;
 		}
 		else if (gameRound > 5){
-			timeLimit = 150 * 1000000;
-		}
+			timeLimit = 175 * 1000000;
+		}*/
 		
 		start = System.nanoTime()/1000;
-		pruningFactor = 0;
-			TopThread myRunnable = new TopThread(board,0);
+		TopThread myRunnable = new TopThread(board,0);
 		new Thread(myRunnable).start();
 		try {
 			Thread.sleep(4850);
@@ -105,8 +101,11 @@ public class G2CatTimeThAdv extends catsdogs.sim.CatPlayer {
 			
 		}
 		   public void run() {
+			   double time1 = System.currentTimeMillis();
 			  score =  miniMax(prePm, thRound, opz, thAlpha, thBeta,board);
-		     
+			  
+				double time2 = (System.currentTimeMillis() - time1);
+			//	logger.error("time: " + time2 + " round: " + gameRound);
 		   }	
 	}
 	public class TopThread implements Runnable {
@@ -128,7 +127,7 @@ public class G2CatTimeThAdv extends catsdogs.sim.CatPlayer {
 		}
 		   public void run() {
 			  thPm =  getBestMove(board,thRound);
-		     
+
 		   }	
 	}
 	public PossibleMove getBestMove(int[][] currentBoard, int round){
@@ -155,6 +154,7 @@ public class G2CatTimeThAdv extends catsdogs.sim.CatPlayer {
 				new Thread(myRunnable).start();
 				try {
 					long sleepTime = 4500/moves.size();
+			//		logger.error(sleepTime);
 					Thread.sleep(sleepTime);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
@@ -163,7 +163,7 @@ public class G2CatTimeThAdv extends catsdogs.sim.CatPlayer {
 				if(myRunnable.score!=0){
 					score = myRunnable.score;
 				}else{
-	//				logger.error("urg");
+			//		logger.error("urg");
 					score =2000;
 				}
 				//score = miniMax(option, 1, ((timeLimit/moves.size())*(optionCt+1)), -1000, 1000, currentBoard);
@@ -213,7 +213,6 @@ public class G2CatTimeThAdv extends catsdogs.sim.CatPlayer {
 				}
 	            if (beta <= alpha){
 	            	double dRound = round;
-	            	pruningFactor += 1;//(1.0/dRound)*20;
 	            	break;
 	           }
 	            
@@ -245,7 +244,6 @@ public class G2CatTimeThAdv extends catsdogs.sim.CatPlayer {
 		            if (beta <= alpha){
 
 		            	double dRound = round;
-		            	pruningFactor += 1;//(1.0/dRound)*20;
 		            	break;
 		            }
 				  }
@@ -401,10 +399,10 @@ public class G2CatTimeThAdv extends catsdogs.sim.CatPlayer {
 			score = 1000-round;
 		}
 		if(isTwoInARow(oldBoard, catMove.getBoard())==-1){
-			score-= 15;
+			score-= 5;
 		}
 		if(isTwoInARow(oldBoard, catMove.getBoard())==1){
-			score+= 15;
+			score+= 5;
 		}/*
 		if(findCatDistances(oldBoard, catMove)==1){
 			score+= 5;

@@ -18,7 +18,7 @@ import catsdogs.sim.PossibleMove;
 public class G2DogTimeThAdv extends catsdogs.sim.DogPlayer {
 	private Logger logger = Logger.getLogger(this.getClass()); // for logging
 
-	private double timeLimit= 6000 * 1000000;
+	private double timeLimit= 500 * 1000000;
 	private final double timeBreak = (5 * 1000000) - 10000;
 	
 	private int gameRound;
@@ -37,28 +37,28 @@ public class G2DogTimeThAdv extends catsdogs.sim.DogPlayer {
 	
 	private void updateLimit(int gameRound){
 		if (gameRound > 40){
-			timeLimit = 10 * 1000000;
+			timeLimit = 40 * 1000000;
 		}
 		else if (gameRound > 35){
-			timeLimit = 10 * 1000000;
+			timeLimit = 40 * 1000000;
 		}
 		else if (gameRound > 30){
-			timeLimit = 25 * 1000000;
-		}
-		else if (gameRound > 25){
 			timeLimit = 50 * 1000000;
 		}
+		else if (gameRound > 25){
+			timeLimit = 100 * 1000000;
+		}
 		else if (gameRound > 20){
-			timeLimit = 70 * 1000000;
+			timeLimit = 170 * 1000000;
 		}
 		else if (gameRound > 15){
-			timeLimit = 75 * 1000000;
+			timeLimit = 350 * 1000000;
 		}
 		else if (gameRound > 10){
-			timeLimit = 130 * 1000000;
+			timeLimit = 530 * 1000000;
 		}
 		else if (gameRound > 5){
-			timeLimit = 500 * 1000000;
+			timeLimit = 1000 * 1000000;
 		}
 	}
 	
@@ -86,18 +86,18 @@ public class G2DogTimeThAdv extends catsdogs.sim.DogPlayer {
 		TopThread myRunnable = new TopThread(board,1);
 		new Thread(myRunnable).start();
 		try {
-			Thread.sleep(4850);
+			Thread.sleep(4700);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		if(myRunnable.thPm==null){
-			logger.error("mv1  out");
+	//		logger.error("mv1  out");
 			return Dog.allLegalMoves(board).get(0);
 		}
 		Move move = myRunnable.thPm;		
 		double time1 = (System.nanoTime()/1000 - start) / 1000000;
-	//	logger.error("time: " + time1 + " round: " + gameRound);
+		logger.error("time: " + time1 + " round: " + gameRound);
 		
 		return move;
 	}
@@ -106,12 +106,9 @@ public class G2DogTimeThAdv extends catsdogs.sim.DogPlayer {
 		public int[][] board;
 		public int thRound;
 		public PossibleMove prePm;
-		double rtl;
-		public PossibleMove thPm;
 		int thAlpha;
 		int thBeta;
 		int score;
-		int sz;
 		double opz;
 		public ThreadDemo(PossibleMove pm, int round, double option, int alpha, int beta, int[][] previousBoard){
 			thRound = round;
@@ -123,8 +120,13 @@ public class G2DogTimeThAdv extends catsdogs.sim.DogPlayer {
 			
 		}
 		   public void run() {
+			   
+
+			  // double time1 = System.currentTimeMillis();
 			  score =  miniMax(prePm, thRound, opz, thAlpha, thBeta,board);
-		     
+			  
+			//	double time2 = (System.currentTimeMillis() - time1);
+			//	logger.error("time: " + time2 + " round: " + gameRound);		     
 		   }	
 	}
 	@Override
@@ -149,19 +151,19 @@ public class G2DogTimeThAdv extends catsdogs.sim.DogPlayer {
 		TopThread myRunnable = new TopThread(board,2);
 		new Thread(myRunnable).start();
 		try {
-			Thread.sleep(4850);
+			Thread.sleep(4700);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		if(myRunnable.thPm==null){
-			logger.error("mv2  out");
+	//	logger.error("mv2  out");
 
 			return Dog.allLegalMoves(board).get(0);
 		}
 		Move move = myRunnable.thPm;		
 		double time2 = (System.nanoTime()/1000 - start) / 1000000;
-	//	logger.error("time: " + time2 + " round: " + gameRound);
+		logger.error("time: " + time2 + " round: " + gameRound);
 		
 		return move;
 	}
@@ -197,6 +199,8 @@ public class G2DogTimeThAdv extends catsdogs.sim.DogPlayer {
 				new Thread(myRunnable).start();
 				try {
 					long sleepTime = 4500/moves.size();
+				//	logger.error(sleepTime);
+
 					Thread.sleep(sleepTime);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
@@ -206,7 +210,7 @@ public class G2DogTimeThAdv extends catsdogs.sim.DogPlayer {
 				//	logger.error(myRunnable.score);
 					score = myRunnable.score;
 				}else{
-					//logger.error("urg");
+		//			logger.error("urg");
 					score =-2000;
 				}
 				//score = miniMax(option, 1, ((timeLimit/moves.size())*(optionCt+1)), -1000, 1000, currentBoard);

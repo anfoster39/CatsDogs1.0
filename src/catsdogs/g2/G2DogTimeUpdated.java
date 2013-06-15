@@ -16,7 +16,7 @@ import catsdogs.sim.PossibleMove;
 public class G2DogTimeUpdated extends catsdogs.sim.DogPlayer {
 	private Logger logger = Logger.getLogger(this.getClass()); // for logging
 
-	private double timeLimit= 6000 * 1000000;
+	private double timeLimit= 5 * 1000000;
 	private final double timeBreak = (5 * 1000000) - 1000;
 	
 	private int gameRound;
@@ -34,7 +34,7 @@ public class G2DogTimeUpdated extends catsdogs.sim.DogPlayer {
 	
 	
 	private void updateLimit(int gameRound){
-		if (gameRound > 40){
+	/*	if (gameRound > 40){
 			timeLimit = 10 * 1000000;
 		}
 		else if (gameRound > 35){
@@ -57,7 +57,7 @@ public class G2DogTimeUpdated extends catsdogs.sim.DogPlayer {
 		}
 		else if (gameRound > 5){
 			timeLimit = 500 * 1000000;
-		}
+		}*/
 	}
 	
 	
